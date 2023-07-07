@@ -57,7 +57,7 @@ app.get("/messages", (req, res) => {
 io.on("connection", (socket) => {
 	socket.on("chat message", (new_msg) => {
 		io.emit("chat message", new_msg);
-		console.log("got new message: " + new_msg);
+		console.log("server got new message: " + new_msg);
 	});
 });
 
