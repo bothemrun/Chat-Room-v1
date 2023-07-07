@@ -17,13 +17,11 @@
 
 		<ul id="messages"></ul>
 
-		<form id=form>
-			<label for="input">Input messages:</label>
-			<input type="text" id=input>
-
-			<button type="submit">Send</button>
-			<!--<button onclick="call_send_message_api()">Send</button> -->
-		</form>
+		<!--don't need a form, which would submit texts if press enter and reload.-->
+		<label for="input">Input messages:</label>
+		<input type="text" id=input>
+		<!--<button type="submit">Send</button>-->
+		<button onclick="call_send_message_api()">Send</button>
 
 		<script src="index.js"></script>
 	</body>

@@ -1,9 +1,8 @@
 const socket = io();
 
 const messages = document.getElementById("messages");
-const form = document.getElementById("form");
 
-form.addEventListener("submit", function(event){
+/*form.addEventListener("submit", function(event){
 	event.preventDefault();//TODO
 
 	console.log(event);
@@ -15,9 +14,9 @@ form.addEventListener("submit", function(event){
 		socket.emit("chat message", input.value);
 		input.value = "";
 	}
-});
+});*/
 
-/*function call_send_message_api(){
+function call_send_message_api(){
 	const input = document.getElementById("input");
 	console.log("user input:" + input.value);
 
@@ -26,7 +25,7 @@ form.addEventListener("submit", function(event){
 		socket.emit("chat message", input.value);
 		input.value = "";
 	}
-};*/
+};
 
 socket.on("chat message", function(new_msg){
 	const new_msg_li = document.createElement("li");
