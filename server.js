@@ -26,6 +26,34 @@ app.post("/messages", (req, res) => {
 	});
 });
 
+app.get("/messages", (req, res) => {
+	console.log("client asks for messages.");
+
+	res.status(200);
+	msgs = []
+	db.all("SELECT * FROM messages", (err, msg_rows) => {
+		msg_rows.forEach((msg) => {
+			console.log(msg);
+			msgs.push(msg);
+		});
+
+		console.log(msgs);	
+
+		console.log("print msgs:");
+		console.log(msgs);
+		res.json({
+			"data":msgs
+		});
+	});
+
+	//TODO: async await, promise
+	/*console.log("print msgs:");
+	console.log(msgs);
+	res.json({
+		"data":msgs
+	});*/
+});
+
 io.on("connection", (socket) => {
 	socket.on("chat message", (new_msg) => {
 		io.emit("chat message", new_msg);
