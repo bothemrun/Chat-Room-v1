@@ -22,7 +22,18 @@ function call_send_message_api(){
 
 	if(input.value){
 		console.log("user input in if:" + input.value);
-		socket.emit("chat message", input.value);
+
+		//socket.emit("chat message", input.value);
+		const xhttp = new XMLHttpRequest();
+		xhttp.onload = function(){
+			console.log("client successfully sent a new message to server with status code:" + this.status);
+			console.log(", with return responseText: " + this.responseText);
+		};
+		xhttp.open("POST", "/messages");
+		xhttp.setRequestHeader("Content-Type", "application/json");
+		xhttp.send(JSON.stringify({"message":input.value}));
+		
+		//TODO: will nonblocking I/O causes the messages cleared before ajax sent?
 		input.value = "";
 	}
 };
