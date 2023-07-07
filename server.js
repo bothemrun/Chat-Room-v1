@@ -54,12 +54,12 @@ app.get("/messages", (req, res) => {
 	});*/
 });
 
-io.on("connection", (socket) => {
+/*io.on("connection", (socket) => {
 	socket.on("chat message", (new_msg) => {
 		io.emit("chat message", new_msg);
 		console.log("server got new message: " + new_msg);
 	});
-});
+});*/
 
 http.listen(port, () => {
 	console.log(`socket.io server running on ${port}`);
