@@ -4,6 +4,9 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = 3000
 
+const sqlite3 = require("sqlite3").verbose();
+const db = new sqlite3.Database("message_db.db");
+
 app.use(express.static("."));
 app.use(express.json());
 
@@ -14,6 +17,10 @@ app.get("/", (req, res) => {
 app.post("/messages", (req, res) => {
 	console.log(req.body);
 	console.log("server got a new message:" + req.body.message);
+
+	db.run("INSERT INTO messages VALUES(?)", req.body.message);
+
+	res.status(201);
 	res.json({
 		"message":true
 	});
