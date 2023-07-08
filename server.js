@@ -25,7 +25,7 @@ const db = new sqlite3.Database("message_db.db");
 //https://expressjs.com/en/starter/static-files.html
 //mounts middleware function in Express that allow express server instance to serve files under /public.
 //https://expressjs.com/en/api.html#express.static
-app.use(express.static("."));//TODO: /public /
+app.use(express.static(__dirname + "/public"));
 
 //mounts express.js builtin middleware in Express that parses incoming requests with JSON payloads.
 //Returns middleware that only parses JSON and only looks at requests where the Content-Type header matches the type option. 
@@ -43,7 +43,7 @@ app.use(express.json());
 
 //HTTP GET. a function handler for the home page.
 app.get("/", (req, res) => {
-	res.sendFile(__dirname + "/index.html");//TODO: /public
+	res.sendFile(__dirname + "/public/index.html");
 });
 
 //HTTP POST. chats.
