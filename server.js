@@ -49,7 +49,7 @@ app.get("/", (req, res) => {
 //HTTP POST. chats.
 app.post("/messages", (req, res) => {
 	console.log(req.body);
-	console.log("server got a new message:" + req.body.message);
+	console.log("experss POST: server got a new message:" + req.body.message);
 
 	//run the SQL query with the param.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
@@ -97,12 +97,15 @@ app.get("/messages", (req, res) => {
 	});*/
 });
 
-/*io.on("connection", (socket) => {
-	socket.on("chat message", (new_msg) => {
-		io.emit("chat message", new_msg);
-		console.log("server got new message: " + new_msg);
+//socket.io emit the event
+io.on("connection", (socket) => {
+	console.log("socket.io server got a new connection.");
+
+	socket.on("new chat message", (new_msg) => {
+		io.emit("new chat message", new_msg);
+		console.log("socket.io: server got new message: " + new_msg);
 	});
-});*/
+});
 
 //TODO: socket.io on connection & disconnect events.
 

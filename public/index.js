@@ -26,7 +26,9 @@ function call_send_message_api(){
 	if(input.value){
 		console.log("user input in if:" + input.value);
 
-		//socket.emit("chat message", input.value);
+		//use socket.io to tell the server to emit the new chat message event.
+		socket.emit("new chat message", input.value);
+
 
 		//use ajax to call RESTful API
 		//send HTTP method(GET POST) requests to server.
@@ -60,13 +62,15 @@ function call_send_message_api(){
 		//send(string) for HTTP POST method.
 		xhttp.send(JSON.stringify({"message":input.value}));
 		
+
 		//TODO: will nonblocking I/O causes the messages cleared before ajax sent?
 		input.value = "";
 	}
 };
 
-//socket.io broadcasting received.
-socket.on("chat message", function(new_msg){
+//when 1 of the clients send a new chat message,
+//socket.io broadcasting received from server.
+socket.on("new chat message", function(new_msg){
 	//add a new entry <li> to a list <ul>
 	const new_msg_li = document.createElement("li");
 	new_msg_li.textContent = new_msg;
