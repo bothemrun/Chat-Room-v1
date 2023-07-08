@@ -19,6 +19,10 @@ const port = 3000
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("message_db.db");
 
+//why not use static("/")?
+//the path that you provide to the express.static function is relative to the directory from where you launch your node process.
+//so static("/") will find a folder called "/".
+//https://expressjs.com/en/starter/static-files.html
 //mounts middleware function in Express that allow express server instance to serve files under /public.
 //https://expressjs.com/en/api.html#express.static
 app.use(express.static("."));//TODO: /public /
