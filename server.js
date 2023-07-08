@@ -48,6 +48,11 @@ app.get("/", (req, res) => {
 
 //HTTP POST. chats.
 app.post("/messages", (req, res) => {
+	console.log();
+	console.log("server got HTTP POST /messages request.");
+
+	//TODO: res req property fields: body, status, json.
+
 	console.log(req.body);
 	console.log("experss POST: server got a new message:" + req.body.message);
 
@@ -63,6 +68,9 @@ app.post("/messages", (req, res) => {
 
 //HTTP GET. chats.
 app.get("/messages", (req, res) => {
+	console.log();
+	console.log("server got HTTP GET /messages request.");
+
 	console.log("client asks for messages.");
 
 	res.status(200);
@@ -76,12 +84,10 @@ app.get("/messages", (req, res) => {
 			msgs.push(msg);
 		});
 
-		console.log(msgs);	
-
 		console.log("print msgs:");
 		console.log(msgs);
 
-		//Sends a JSON response. This method sends a response (with the correct content-type) that is the parameter converted to a JSON string using JSON.stringify().
+		//Sends a JSON response. This method sends a response (with the correct Content-Type) that is the parameter converted to a JSON string using JSON.stringify().
 		//The parameter can be any JSON type, including object, array, string, Boolean, number, or null, and you can also use it to convert other values to JSON.
 		//https://expressjs.com/en/4x/api.html#res.json
 		res.json({
