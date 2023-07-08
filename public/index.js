@@ -5,6 +5,53 @@ const socket = io();
 
 const chat_logs = document.getElementById("chat_logs");
 
+//when the user enters the chat room, it gets all old chat logs.
+function enter_room_get_all_chat_logs(){
+	console.log("client enters the chat room and gets all old chat logs.");
+
+	//use ajax to call RESTful API
+	//send HTTP method(GET POST) requests to server.
+	//https://www.w3schools.com/js/js_ajax_intro.asp
+	//by an XMLHttpRequst object.
+	const xhttp = new XMLHttpRequest();
+
+	//callback when the request is received.
+	xhttp.onload = function(){
+		console.log("client successfully sent an HTTP GET for all chat logs to server with status:" + this.status + " " + this.statusText);
+
+		//`this` is a XMLHttpRequest object.
+		//its property includes: responseText, status, statusText, onload callback function
+		console.log(". with responseText: " + this.responseText);
+
+		console.log("Now all chat logs:");
+		//JSON string to Javascript object
+		//https://www.digitalocean.com/community/tutorials/js-json-parse-stringify
+		JSON.parse(this.responseText).data.forEach( (msg) => {
+			console.log(msg);
+			console.log(msg.message);
+		} );
+	};
+
+	//HTTP GET
+	xhttp.open("GET", "/messages");
+
+	//specify http message body's Content-Type in header.
+	/*
+	in server.js:
+		//mounts express.js builtin middleware in Express that parses incoming requests with JSON payloads.
+		//Returns middleware that only parses JSON and only looks at requests where the Content-Type header matches the type option.
+		//a new body object containing the parsed data is populated on the request object after the middleware (i.e. req.body).
+		//https://expressjs.com/en/api.html#express.json
+		app.use(express.json());
+	*/
+	xhttp.setRequestHeader("Content-Type", "application/json");
+
+	xhttp.send();
+};
+
+enter_room_get_all_chat_logs();
+
+
 /*form.addEventListener("submit", function(event){
 	event.preventDefault();//TODO
 
@@ -38,7 +85,10 @@ function call_send_message_api(){
 
 		//callback when the request is received.
 		xhttp.onload = function(){
-			console.log("client successfully sent a new message to server with status code:" + this.status);
+			console.log("client successfully sent an HTTP POST & sent a new message to server with status:" + this.status + " " + this.statusText);
+
+			//`this` is a XMLHttpRequest object.
+			//its property includes: responseText, status, statusText, onload callback function
 			console.log(", with return responseText: " + this.responseText);
 		};
 
