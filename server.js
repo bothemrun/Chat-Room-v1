@@ -21,7 +21,7 @@ const db = new sqlite3.Database("message_db.db");
 
 //mounts middleware function in Express that allow express server instance to serve files under /public.
 //https://expressjs.com/en/api.html#express.static
-app.use(express.static("/"));//TODO: /public
+app.use(express.static("."));//TODO: /public /
 
 //mounts express.js builtin middleware in Express that parses incoming requests with JSON payloads.
 //Returns middleware that only parses JSON and only looks at requests where the Content-Type header matches the type option. 

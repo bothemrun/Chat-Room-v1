@@ -3,7 +3,7 @@
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
 const socket = io();
 
-const messages = document.getElementById("messages");
+const chat_logs = document.getElementById("chat_logs");
 
 /*form.addEventListener("submit", function(event){
 	event.preventDefault();//TODO
@@ -20,7 +20,7 @@ const messages = document.getElementById("messages");
 });*/
 
 function call_send_message_api(){
-	const input = document.getElementById("input");
+	const input = document.getElementById("chat_input");
 	console.log("user input:" + input.value);
 
 	if(input.value){
@@ -70,7 +70,7 @@ socket.on("chat message", function(new_msg){
 	//add a new entry <li> to a list <ul>
 	const new_msg_li = document.createElement("li");
 	new_msg_li.textContent = new_msg;
-	messages.appendChild(new_msg_li);
+	chat_logs.appendChild(new_msg_li);
 
 	//chats scrolled down to the latest.
 	window.scrollTo(0, document.body.scrollHeight);
