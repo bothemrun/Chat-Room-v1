@@ -51,18 +51,20 @@ app.post("/messages", (req, res) => {
 	console.log();
 	console.log("server got HTTP POST /messages request.");
 
+	const timestamp_utc = (new Date()).toUTCString();
+
 	//socket.io emit the event to all clients
-	io.emit("new chat message", req.body.message, req.body.timestamp);
+	io.emit("new chat message", req.body.message, timestamp_utc);
 
 
 	//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
 	//https://expressjs.com/en/api.html#req.body
 	console.log(req.body);
-	console.log("experss POST: server got a new message:" + req.body.message + ", timestamp:" + req.body.timestamp);
+	console.log("experss POST: server got a new message:" + req.body.message + ", on timestamp_utc:" + timestamp_utc);
 
 	//run the SQL query with the param.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
-	db.run("INSERT INTO messages VALUES(?, ?)", req.body.message, req.body.timestamp);
+	db.run("INSERT INTO messages VALUES(?, ?)", req.body.message, timestamp_utc);
 
 	//Sets the HTTP status for the response.
 	//https://expressjs.com/en/api.html#res.status
