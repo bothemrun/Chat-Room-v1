@@ -51,7 +51,9 @@ app.post("/messages", (req, res) => {
 	console.log();
 	console.log("server got HTTP POST /messages request.");
 
-	//TODO: res req property fields: body, status, json.
+	//socket.io emit the event to all clients
+	io.emit("new chat message", req.body.message, req.body.timestamp);
+
 
 	//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
 	//https://expressjs.com/en/api.html#req.body
@@ -118,11 +120,6 @@ app.get("/messages", (req, res) => {
 //socket.io emit the event
 io.on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
-
-	socket.on("new chat message", (new_msg, timestamp)=> {
-		io.emit("new chat message", new_msg, timestamp);
-		console.log("socket.io: server got new message: " + new_msg + ", timestamp:" + timestamp);
-	});
 });
 
 //TODO: socket.io on connection & disconnect events.

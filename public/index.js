@@ -88,9 +88,6 @@ function call_send_message_api(){
 
 		const timestamp = (new Date()).toString();
 
-		//use socket.io to tell the server to emit the new chat message event.
-		socket.emit("new chat message", input.value, timestamp);
-
 
 		//use ajax to call RESTful API
 		//send HTTP method(GET POST) requests to server.
