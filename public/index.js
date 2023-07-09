@@ -131,7 +131,7 @@ socket.on("new chat message", function(new_msg, timestamp){
 
 	//add a new entry <li> to a list <ul>
 	const new_msg_li = document.createElement("li");
-	new_msg_li.textContent = new_msg;
+	new_msg_li.textContent = new_msg + ".    timestamp:" + timestamp;
 	chat_logs.appendChild(new_msg_li);
 
 	//chats scrolled down to the latest.
