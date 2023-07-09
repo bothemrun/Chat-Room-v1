@@ -53,14 +53,23 @@ app.post("/messages", (req, res) => {
 
 	//TODO: res req property fields: body, status, json.
 
+	//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
+	//https://expressjs.com/en/api.html#req.body
 	console.log(req.body);
-	console.log("experss POST: server got a new message:" + req.body.message);
+	console.log("experss POST: server got a new message:" + req.body.message + ", timestamp:" + req.body.timestamp);
 
 	//run the SQL query with the param.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
-	db.run("INSERT INTO messages VALUES(?)", req.body.message);
+	db.run("INSERT INTO messages VALUES(?, ?)", req.body.message, req.body.timestamp);
 
+	//Sets the HTTP status for the response.
+	//https://expressjs.com/en/api.html#res.status
 	res.status(201);
+
+	//Sends a JSON response.
+	//This method sends a response (with the correct content-type) that is the parameter converted to a JSON string using JSON.stringify().
+	//The parameter can be any JSON type, including object, array, string, Boolean, number, or null, and you can also use it to convert other values to JSON.
+	//https://expressjs.com/en/api.html#res.status
 	res.json({
 		"message":true
 	});
@@ -73,7 +82,6 @@ app.get("/messages", (req, res) => {
 
 	console.log("client asks for messages.");
 
-	res.status(200);
 	msgs = []
 
 	//run the SQL query with the callback function.
@@ -101,15 +109,19 @@ app.get("/messages", (req, res) => {
 	res.json({
 		"data":msgs
 	});*/
+
+	//Sets the HTTP status for the response.
+	//https://expressjs.com/en/api.html#res.status
+	res.status(200);
 });
 
 //socket.io emit the event
 io.on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
 
-	socket.on("new chat message", (new_msg) => {
-		io.emit("new chat message", new_msg);
-		console.log("socket.io: server got new message: " + new_msg);
+	socket.on("new chat message", (new_msg, timestamp)=> {
+		io.emit("new chat message", new_msg, timestamp);
+		console.log("socket.io: server got new message: " + new_msg + ", timestamp:" + timestamp);
 	});
 });
 

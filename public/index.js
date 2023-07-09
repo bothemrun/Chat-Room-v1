@@ -29,6 +29,7 @@ function enter_room_get_all_chat_logs(){
 		JSON.parse(this.responseText).data.forEach( (msg) => {
 			console.log(msg);
 			console.log(msg.message);
+			console.log(msg.timestamp);
 		} );
 	};
 
@@ -73,8 +74,10 @@ function call_send_message_api(){
 	if(input.value){
 		console.log("user input in if:" + input.value);
 
+		const timestamp = (new Date()).toString();
+
 		//use socket.io to tell the server to emit the new chat message event.
-		socket.emit("new chat message", input.value);
+		socket.emit("new chat message", input.value, timestamp);
 
 
 		//use ajax to call RESTful API
@@ -110,7 +113,10 @@ function call_send_message_api(){
 		//JSON is Javascript standard built-in objects like Javascript BigInt String.
 		//https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects
 		//send(string) for HTTP POST method.
-		xhttp.send(JSON.stringify({"message":input.value}));
+		xhttp.send(JSON.stringify({
+			"message":input.value,
+			"timestamp":timestamp
+		}));
 		
 
 		//TODO: will nonblocking I/O causes the messages cleared before ajax sent?
@@ -120,7 +126,9 @@ function call_send_message_api(){
 
 //when 1 of the clients send a new chat message,
 //socket.io broadcasting received from server.
-socket.on("new chat message", function(new_msg){
+socket.on("new chat message", function(new_msg, timestamp){
+	console.log("client got a new chat: " + new_msg + ", timestamp:" + timestamp);
+
 	//add a new entry <li> to a list <ul>
 	const new_msg_li = document.createElement("li");
 	new_msg_li.textContent = new_msg;
