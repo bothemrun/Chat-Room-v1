@@ -5,6 +5,16 @@ const socket = io();
 
 const chat_logs = document.getElementById("chat_logs");
 
+function append_new_chat_log(new_msg, timestamp){
+	//add a new entry <li> to a list <ul>
+	const new_msg_li = document.createElement("li");
+	new_msg_li.textContent = new_msg + ".    timestamp:" + timestamp;
+	chat_logs.appendChild(new_msg_li);
+
+	//chats scrolled down to the latest.
+	window.scrollTo(0, document.body.scrollHeight);
+};
+
 //when the user enters the chat room, it gets all old chat logs.
 function enter_room_get_all_chat_logs(){
 	console.log("client enters the chat room and gets all old chat logs.");
@@ -30,6 +40,8 @@ function enter_room_get_all_chat_logs(){
 			console.log(msg);
 			console.log(msg.message);
 			console.log(msg.timestamp);
+
+			append_new_chat_log(msg.message, msg.timestamp);
 		} );
 	};
 
@@ -129,13 +141,7 @@ function call_send_message_api(){
 socket.on("new chat message", function(new_msg, timestamp){
 	console.log("client got a new chat: " + new_msg + ", timestamp:" + timestamp);
 
-	//add a new entry <li> to a list <ul>
-	const new_msg_li = document.createElement("li");
-	new_msg_li.textContent = new_msg + ".    timestamp:" + timestamp;
-	chat_logs.appendChild(new_msg_li);
-
-	//chats scrolled down to the latest.
-	window.scrollTo(0, document.body.scrollHeight);
+	append_new_chat_log(new_msg, timestamp);
 });
 
 
