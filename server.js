@@ -178,6 +178,7 @@ app.post("/login", (req, res) => {
 				if(account.password === req.body.password){
 					if(active_username_set.has(req.body.username) === true){
 						console.log("login: user already logged in.");
+						console.log("active username set: " + Array.from(active_username_set) );
 
 						res.status(400);
 						res.json({
@@ -199,6 +200,7 @@ app.post("/login", (req, res) => {
 					return;
 				}else{
 					console.log("login: password incorrect !!!");
+					console.log("active username set: " + Array.from(active_username_set) );
 					res.status(403);
 					res.json({
 						"login":"password incorrect"
@@ -210,11 +212,39 @@ app.post("/login", (req, res) => {
 		}
 
 		console.log("login: username not found !!!");
+		console.log("active username set: " + Array.from(active_username_set) );
 		res.status(401);
 		res.json({
 			"login":"username not found"
 		});
 	});
+});
+
+
+//HTTP POST. logout
+app.post("/logout", (req, res) => {
+	console.log();
+	console.log("server got an HTTP POST /logout request.");
+
+	if(active_username_set.has(req.body.username) === true){
+		console.log("logout: success.");
+
+		active_username_set.delete(req.body.username);
+		console.log("active username set: " + Array.from(active_username_set) );
+
+		res.status(200);
+		res.json({
+			"logout":"success"
+		});
+	}else{
+		console.log("logout: username not active.");
+		console.log("active username set: " + Array.from(active_username_set) );
+
+		res.status(400);
+		res.json({
+			"logout":"username not active"
+		});
+	}
 });
 
 
