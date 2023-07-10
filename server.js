@@ -36,7 +36,7 @@ app.use(express.json());
 
 //all logged-in users.
 //can have duplicate logged-in users.
-active_username_list = [];
+active_username_set = new Set();
 
 
 
@@ -150,7 +150,7 @@ app.post("/register", (req, res) => {
 			console.log("register: username conflict.");
 			res.status(400);
 			res.json({
-				"register":false
+				"register":"username conflict"
 			});
 			return;
 		}
@@ -159,7 +159,7 @@ app.post("/register", (req, res) => {
 		db.run("INSERT INTO accounts VALUES(?, ?)", req.body.username, req.body.password);
 		res.status(201);
 		res.json({
-			"register":true
+			"register":"success"
 		});
 	});
 
@@ -176,10 +176,20 @@ app.post("/login", (req, res) => {
 			if(account.username === req.body.username){
 				username_found = true;
 				if(account.password === req.body.password){
+					if(active_username_set.has(req.body.username) === true){
+						console.log("login: user already logged in.");
+
+						res.status(400);
+						res.json({
+							"login":"already logged in"
+						});
+						return;
+					}
+
 					console.log("login: " + req.body.username + " successful");
 
-					active_username_list.push(req.body.username);
-					console.log("active username list: " + active_username_list);
+					active_username_set.add(req.body.username);
+					console.log("active username set: " + Array.from(active_username_set) );
 
 					res.status(200);
 					res.json({
