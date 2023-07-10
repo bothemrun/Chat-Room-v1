@@ -119,6 +119,45 @@ app.get("/messages", (req, res) => {
 	res.status(200);
 });
 
+
+//HTTP POST. register.
+app.post("/register", (req, res) => {
+	console.log();
+	console.log("server got HTTP POST register request.");
+
+	console.log(req.body);
+	console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
+
+	//get all account usernames
+	username_conflict = false;
+	db.all("SELECT * FROM accounts", (err, account_rows) => {
+		account_rows.forEach( (account) => {
+			if(account.username == req.body.username){
+				username_conflict = true;
+				break;
+			}
+		} )
+	});
+
+	if(username_conflict == true){
+		console.log("register: username conflict.");
+		res.status(400);
+		res.json({
+			"register":false
+		});
+		return;
+	}
+
+	console.log("register: successful.");
+	db.run("INSERT INTO accounts VALUES(?, ?)", req.body.username, req.body.password);
+	res.status(201);
+	res.json({
+		"register":true
+	});
+});
+
+
+
 //socket.io emit the event
 io.on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
