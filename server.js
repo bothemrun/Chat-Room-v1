@@ -91,10 +91,10 @@ app.get("/messages", (req, res) => {
 	//run the SQL query with the callback function.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
 	db.all("SELECT * FROM messages", (err, msg_rows) => {
-		msg_rows.forEach((msg) => {
+		for(msg of msg_rows){
 			console.log(msg);
 			msgs.push(msg);
-		});
+		}
 
 		console.log("print msgs:");
 		console.log(msgs);
@@ -114,11 +114,11 @@ app.get("/messages", (req, res) => {
 		"data":msgs
 	});*/
 
+	//TODO: should res.status() before res.json() ?
 	//Sets the HTTP status for the response.
 	//https://expressjs.com/en/api.html#res.status
 	res.status(200);
 });
-
 
 //HTTP POST. register.
 app.post("/register", (req, res) => {
@@ -131,31 +131,33 @@ app.post("/register", (req, res) => {
 	//get all account usernames
 	username_conflict = false;
 	db.all("SELECT * FROM accounts", (err, account_rows) => {
-		account_rows.forEach( (account) => {
-			if(account.username == req.body.username){
+		for(account of account_rows){
+			if(account.username === req.body.username){
+				console.log("register: username conflict.");
 				username_conflict = true;
 				break;
 			}
-		} )
-	});
+		}
 
-	if(username_conflict == true){
-		console.log("register: username conflict.");
-		res.status(400);
+		//callback hell: javascript uses nonblocking I/O.
+		if(username_conflict === true){
+			console.log("register: username conflict.");
+			res.status(400);
+			res.json({
+				"register":false
+			});
+			return;
+		}
+
+		console.log("register: successful.");
+		db.run("INSERT INTO accounts VALUES(?, ?)", req.body.username, req.body.password);
+		res.status(201);
 		res.json({
-			"register":false
+			"register":true
 		});
-		return;
-	}
-
-	console.log("register: successful.");
-	db.run("INSERT INTO accounts VALUES(?, ?)", req.body.username, req.body.password);
-	res.status(201);
-	res.json({
-		"register":true
 	});
-});
 
+});
 
 
 //socket.io emit the event
