@@ -34,6 +34,11 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 
 
+//all logged-in users.
+//can have duplicate logged-in users.
+active_username_list = [];
+
+
 
 //Express Routing guide:
 //https://expressjs.com/en/guide/routing.html
@@ -129,8 +134,9 @@ app.post("/register", (req, res) => {
 	console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
 	//get all account usernames
-	username_conflict = false;
 	db.all("SELECT * FROM accounts", (err, account_rows) => {
+		username_conflict = false;
+
 		for(account of account_rows){
 			if(account.username === req.body.username){
 				console.log("register: username conflict.");
@@ -158,6 +164,49 @@ app.post("/register", (req, res) => {
 	});
 
 });
+
+
+//HTTP POST. login
+app.post("/login", (req, res) => {
+	console.log();
+	console.log("server got an HTTP POST /login request.");
+
+	db.all("SELECT * FROM accounts", (err, account_rows) => {
+		for(account of account_rows){
+			if(account.username === req.body.username){
+				username_found = true;
+				if(account.password === req.body.password){
+					console.log("login: " + req.body.username + " successful");
+
+					active_username_list.push(req.body.username);
+					console.log("active username list: " + active_username_list);
+
+					res.status(200);
+					res.json({
+						"login":"success"
+					});
+
+					return;
+				}else{
+					console.log("login: password incorrect !!!");
+					res.status(403);
+					res.json({
+						"login":"password incorrect"
+					});
+
+					return;
+				}
+			}
+		}
+
+		console.log("login: username not found !!!");
+		res.status(401);
+		res.json({
+			"login":"username not found"
+		});
+	});
+});
+
 
 
 //socket.io emit the event
