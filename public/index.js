@@ -39,13 +39,13 @@ function enter_room_get_all_chat_logs(){
 		console.log("Now all chat logs:");
 		//JSON string to Javascript object
 		//https://www.digitalocean.com/community/tutorials/js-json-parse-stringify
-		JSON.parse(this.responseText).data.forEach( (msg) => {
+		for(let msg of JSON.parse( this.responseText ).data ){
 			console.log(msg);
 			console.log(msg.message);
 			console.log("timestamp utc: " + msg.timestamp_utc);
 
 			append_new_chat_log(msg.message, msg.timestamp_utc);
-		} );
+		}
 	};
 
 	//HTTP GET

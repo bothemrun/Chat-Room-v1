@@ -96,7 +96,7 @@ app.get("/messages", (req, res) => {
 	//run the SQL query with the callback function.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
 	db.all("SELECT * FROM messages", (err, msg_rows) => {
-		for(msg of msg_rows){
+		for(let msg of msg_rows){
 			console.log(msg);
 			msgs.push(msg);
 		}
@@ -137,7 +137,7 @@ app.post("/register", (req, res) => {
 	db.all("SELECT * FROM accounts", (err, account_rows) => {
 		username_conflict = false;
 
-		for(account of account_rows){
+		for(let account of account_rows){
 			if(account.username === req.body.username){
 				console.log("register: username conflict.");
 				username_conflict = true;
@@ -172,7 +172,7 @@ app.post("/login", (req, res) => {
 	console.log("server got an HTTP POST /login request.");
 
 	db.all("SELECT * FROM accounts", (err, account_rows) => {
-		for(account of account_rows){
+		for(let account of account_rows){
 			if(account.username === req.body.username){
 				username_found = true;
 				if(account.password === req.body.password){
