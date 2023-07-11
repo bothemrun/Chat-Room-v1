@@ -2,7 +2,7 @@
 <html>
 
 	<head>
-		<title> Chat-Room-v1</title>
+		<title> Chat-Room-v1 Chat Room</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<style>
 			/*CSS TODO*/
@@ -12,18 +12,22 @@
 	</head>
 
 	<body>
-		<h1>Chat Room v1.</h2>
+		<h1>Chat Room v1. Chat Room.</h1>
 		<p>input text messages below in the form.</p>
 
 		<ul id="chat_logs"></ul>
 
 		<!--don't need a form, which would submit texts if press enter and reload.-->
-		<label for="chat_input">Input chat message:</label>
-		<input type="text" id=chat_input>
+		<label for="input_chat">Input chat message:</label>
+		<input type="text" id=input_chat>
+
 		<!--<button type="submit">Send</button>-->
 		<button onclick="call_send_message_api()">Send</button>
 
-		<script src="index.js"></script>
+
+		<button onclick="logout()">Log out</button>
+
+		<script src="chat.js"></script>
 	</body>
 
 </html>

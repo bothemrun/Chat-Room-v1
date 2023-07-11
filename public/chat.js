@@ -83,7 +83,7 @@ enter_room_get_all_chat_logs();
 });*/
 
 function call_send_message_api(){
-	const input = document.getElementById("chat_input");
+	const input = document.getElementById("input_chat");
 	console.log("user input:" + input.value);
 
 	if(input.value){
