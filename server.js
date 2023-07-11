@@ -84,6 +84,7 @@ app.post("/messages", (req, res) => {
 	});
 });
 
+
 //HTTP GET. chats.
 app.get("/messages", (req, res) => {
 	console.log();
@@ -124,6 +125,7 @@ app.get("/messages", (req, res) => {
 	//https://expressjs.com/en/api.html#res.status
 	res.status(200);
 });
+
 
 //HTTP POST. register.
 app.post("/register", (req, res) => {
@@ -197,6 +199,8 @@ app.post("/login", (req, res) => {
 						"login":"success"
 					});
 
+					//TODO: redirect to the chat room page.
+
 					return;
 				}else{
 					console.log("login: password incorrect !!!");
@@ -236,6 +240,8 @@ app.post("/logout", (req, res) => {
 		res.json({
 			"logout":"success"
 		});
+
+		//TODO: redirect to the login page.
 	}else{
 		console.log("logout: username not active.");
 		console.log("active username set: " + Array.from(active_username_set) );
