@@ -48,7 +48,7 @@ active_username_set = new Set();
 
 //HTTP GET. a function handler for the home page.
 app.get("/", (req, res) => {
-	res.sendFile(__dirname + "/public/index.html");
+	res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
 });
 
 //HTTP POST. chats.
