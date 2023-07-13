@@ -1,4 +1,18 @@
 
+function redirect_home(){
+	path = "/";
+	console.log("client redirects to " + path);
+
+	const xhttp = new XMLHttpRequest();
+	xhttp.onload = function(){
+		console.log("client successfully redirects to " + path + " & received status:" + this.status + " " + this.statusText);
+		console.log(". with responseText:" + this.responseText);
+	};
+	xhttp.open("GET", path);
+	xhtttp.setRequestHeader("Content-Type", "application/json");
+	xhttp.send();
+}
+
 function register(){
 	const input_username = document.getElementById("input_username");
 	const input_password = document.getElementById("input_password");
@@ -51,6 +65,8 @@ function login(){
 			//TODO: username not found, already logged in, wrong password.
 
 			//TODO: add logged in state.
+
+			redirect_home();
 		};
 
 		xhttp.open("POST", "/login");
@@ -87,6 +103,8 @@ function logout(){
 			//TODO: not logged in before.
 
 			//TODO: remove logged in state.
+
+			redirect_home();
 		};
 
 		xhttp.open("POST", "/logout");

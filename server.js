@@ -19,6 +19,17 @@ const port = 3000
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("message_db.db");
 
+
+//user login by express-session
+//https://expressjs.com/en/resources/middleware/session.html
+const session = require("express-session");
+
+app.use(session({
+	secret: "https://expressjs.com/en/resources/middleware/session.html",
+	resave: false,
+	saveUninitialized: true
+}));
+
 //why not use static("/")?
 //the path that you provide to the express.static function is relative to the directory from where you launch your node process.
 //so static("/") will find a folder called "/".
@@ -39,6 +50,17 @@ app.use(express.json());
 active_username_set = new Set();
 
 
+//user login by express-session
+//https://expressjs.com/en/resources/middleware/session.html
+function is_authenticated(req, res, next){
+	if(req.session.user) return;
+	//error: cannot GET /login
+	//since /login router path uses POST.
+	//else res.redirect("/login");
+
+	//TODO: router redirect instead of sending the whole login/register html
+	res.sendFile(__dirname + "/public/login.html");
+}
 
 //Express Routing guide:
 //https://expressjs.com/en/guide/routing.html
@@ -47,7 +69,7 @@ active_username_set = new Set();
 //https://expressjs.com/en/starter/basic-routing.html
 
 //HTTP GET. a function handler for the home page.
-app.get("/", (req, res) => {
+app.get("/", is_authenticated, (req, res) => {
 	res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
 });
 
@@ -189,6 +211,26 @@ app.post("/login", (req, res) => {
 						return;
 					}
 
+
+					// regenerate the session, which is good practice to help
+					// guard against forms of session fixation
+					//https://expressjs.com/en/resources/middleware/session.html
+					req.session.regenerate(function(err) {
+						if(err) next(err);
+
+						req.session.user = req.body.username;
+
+						// save the session before redirection to ensure page
+    // load does not happen before session is saved
+						req.session.save(function(err) {
+							if(err) return next(err);
+							console.log("login: " + req.body.username + " saved to session successfully.");
+							//TODO: frontend client executes the redirection to the home page /
+							//res.redirect("/");
+						});
+					});
+
+
 					console.log("login: " + req.body.username + " successful");
 
 					active_username_set.add(req.body.username);
@@ -231,6 +273,19 @@ app.post("/logout", (req, res) => {
 	console.log("server got an HTTP POST /logout request.");
 
 	if(active_username_set.has(req.body.username) === true){
+		//https://expressjs.com/en/resources/middleware/session.html
+		delete req.session.user;
+		req.session.save(function(err) {
+			// regenerate the session, which is good practice to help
+		    // guard against forms of session fixation
+			req.session.regenerate(function(err) {
+				if(err) next(err);
+				//TODO: frontend client executes the redirection to the home page /
+				//res.redirect("/");
+			});
+		});
+
+
 		console.log("logout: success.");
 
 		active_username_set.delete(req.body.username);
