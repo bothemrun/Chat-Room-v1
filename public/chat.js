@@ -5,13 +5,13 @@ const socket = io();
 
 const chat_logs = document.getElementById("chat_logs");
 
-function append_new_chat_log(new_msg, timestamp_utc){
+function append_new_chat_log(new_msg, timestamp_utc, username){
 	//time zone converted from server utc to client local.
 	const timestamp_local = (new Date(timestamp_utc)).toString();
 
 	//add a new entry <li> to a list <ul>
 	const new_msg_li = document.createElement("li");
-	new_msg_li.textContent = new_msg + "||    " + timestamp_local;
+	new_msg_li.textContent = "[" + username + "]: " + new_msg + "||    " + timestamp_local;
 	chat_logs.appendChild(new_msg_li);
 
 	//chats scrolled down to the latest.
@@ -43,8 +43,9 @@ function enter_room_get_all_chat_logs(){
 			console.log(msg);
 			console.log(msg.message);
 			console.log("timestamp utc: " + msg.timestamp_utc);
+			console.log("username: " + msg.usename);
 
-			append_new_chat_log(msg.message, msg.timestamp_utc);
+			append_new_chat_log(msg.message, msg.timestamp_utc, msg.username);
 		}
 	};
 
@@ -135,10 +136,10 @@ function call_send_message_api(){
 
 //when 1 of the clients send a new chat message,
 //socket.io broadcasting received from server.
-socket.on("new chat message", function(new_msg, timestamp_utc){
-	console.log("client got a new chat: " + new_msg + ", timestamp utc:" + timestamp_utc);
+socket.on("new chat message", function(new_msg, timestamp_utc, username){
+	console.log("client got a new chat: " + new_msg + ", timestamp utc:" + timestamp_utc + ", username: " + username);
 
-	append_new_chat_log(new_msg, timestamp_utc);
+	append_new_chat_log(new_msg, timestamp_utc, username);
 });
 
 

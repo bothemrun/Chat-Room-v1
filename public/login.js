@@ -6,6 +6,10 @@ function redirect_home(){
 	xhttp.onload = function(){
 		console.log("client successfully redirects to " + path + " & received status:" + this.status + " " + this.statusText);
 		console.log(". with responseText:" + this.responseText);
+
+		//ajax won't redirect in the frontend, even if the backend redirects.
+		//https://stackoverflow.com/questions/27202075/expressjs-res-redirect-not-working-as-expected
+		window.location.reload();
 	};
 	xhttp.open("GET", path);
 	xhttp.setRequestHeader("Content-Type", "application/json");
@@ -60,12 +64,10 @@ function login(){
 		xhttp.onload = function(){
 			console.log("client successfully sent an HTTP POST /login & received status:" + this.status + " " + this.statusText);
 			console.log(". with responseText:" + this.responseText);
-
 			//TODO: username not found, already logged in, wrong password.
-
 			//TODO: add logged in state.
 
-			//TODO: redirect_home();
+			redirect_home();
 		};
 
 		xhttp.open("POST", "/login");
@@ -103,7 +105,9 @@ function logout(){
 			console.log(". with responseText:" + this.responseText);
 			//TODO: not logged in before.
 			//TODO: remove logged in state.
-			//TODO: redirect_home();
+
+			if(this.statusText === "OK")
+				redirect_home();
 		};
 
 		xhttp.open("POST", "/logout");

@@ -90,7 +90,7 @@ app.post("/messages", (req, res) => {
 
 	//socket.io emit the event to all clients
 	//TODO: io.emit("new chat message", req.body.message, timestamp_utc);
-	io.emit("new chat message", req.session.user + ":" +  req.body.message, timestamp_utc);
+	io.emit("new chat message", req.body.message, timestamp_utc, req.session.user);
 
 
 	//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
@@ -101,7 +101,7 @@ app.post("/messages", (req, res) => {
 	//run the SQL query with the param.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
 	//TODO: db.run("INSERT INTO messages VALUES(?, ?)", req.body.message, timestamp_utc);
-	db.run("INSERT INTO messages VALUES(?, ?)", req.session.user + ":" + req.body.message, timestamp_utc);
+	db.run("INSERT INTO messages VALUES(?, ?, ?)", req.body.message, timestamp_utc, req.session.user);
 
 	//Sets the HTTP status for the response.
 	//https://expressjs.com/en/api.html#res.status
@@ -144,13 +144,6 @@ app.get("/messages", (req, res) => {
 			"data":msgs
 		});
 	});
-
-	//TODO: async await, promise
-	/*console.log("print msgs:");
-	console.log(msgs);
-	res.json({
-		"data":msgs
-	});*/
 
 	//TODO: should res.status() before res.json() ?
 	//Sets the HTTP status for the response.
