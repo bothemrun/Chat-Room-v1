@@ -30,6 +30,16 @@ app.use(session({
 	saveUninitialized: true
 }));
 
+
+//https://stackoverflow.com/questions/28362909/how-do-i-restrict-the-user-from-accessing-the-static-html-files-in-a-expressjs-n
+app.use((req, res, next) => {
+	if(req.path.indexOf(".html") >= 0){
+		console.log("server restricts access to html static files: " + req.path);
+		res.redirect("/");
+	}
+	next();
+});
+
 //why not use static("/")?
 //the path that you provide to the express.static function is relative to the directory from where you launch your node process.
 //so static("/") will find a folder called "/".
