@@ -31,7 +31,10 @@ function register(){
 			console.log("client successfully sent an HTTP POST /register & received status:" + this.status + " " + this.statusText);
 			console.log(". with responseText:" + this.responseText);
 
-			//TODO: handle username conflict.
+			if(this.status !== 201){
+				console.log("register: username conflict!");
+				window.alert("register: username conflict!");
+			}
 		};
 
 		xhttp.open("POST", "/register");
@@ -64,10 +67,11 @@ function login(){
 		xhttp.onload = function(){
 			console.log("client successfully sent an HTTP POST /login & received status:" + this.status + " " + this.statusText);
 			console.log(". with responseText:" + this.responseText);
-			//TODO: username not found, already logged in, wrong password.
-			//TODO: add logged in state.
 
-			redirect_home();
+			if(this.status !== 200){
+				console.log("login: username not match or password incorrect!");
+				window.alert("login: username not match or password incorrect!");
+			}else redirect_home();
 		};
 
 		xhttp.open("POST", "/login");
@@ -88,42 +92,24 @@ function login(){
 }
 
 function logout(){
-	/* TODO: session username?
-	//TODO: get username & password from logged in state, not input box below.
-	const input_username = document.getElementById("input_username");
-	const input_password = document.getElementById("input_password");
+	const xhttp = new XMLHttpRequest();
 
-	console.log("client logs out with username:" + input_username.value + ", password:" + input_password.value);
-	*/
+	xhttp.onload = function(){
+		console.log("client successfully sent an HTTP POST /logout & received status:" + this.status + " " + this.statusText);
+		console.log(". with responseText:" + this.responseText);
 
-	//TODO: if(input_username && input_password){
-	if(true){
-		const xhttp = new XMLHttpRequest();
+		if(this.status !== 200){
+			console.log("logout: error from server.");
+			window.alert("logout: error from server.");
+		}else redirect_home();
+	};
 
-		xhttp.onload = function(){
-			console.log("client successfully sent an HTTP POST /logout & received status:" + this.status + " " + this.statusText);
-			console.log(". with responseText:" + this.responseText);
-			//TODO: not logged in before.
-			//TODO: remove logged in state.
+	xhttp.open("POST", "/logout");
 
-			if(this.statusText === "OK")
-				redirect_home();
-		};
+	xhttp.setRequestHeader("Content-Type", "application/json");
 
-		xhttp.open("POST", "/logout");
-
-		xhttp.setRequestHeader("Content-Type", "application/json");
-
-		xhttp.send(JSON.stringify({
-			"username":"lougout TODO",
-			"password":"logout TODO"
-		}));
-		/*xhttp.send(JSON.stringify({
-			"username":input_username.value,
-			"password":input_passoword.value
-		}));*/
-	}else{
-		/*console.log("empty username / password input.");
-		window.alert("empty username / password input.");*/
-	}
+	xhttp.send(JSON.stringify({
+		"username":"lougout TODO",
+		"password":"logout TODO"
+	}));
 }
