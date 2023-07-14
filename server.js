@@ -49,18 +49,19 @@ app.use(express.json());
 //can have duplicate logged-in users.
 active_username_set = new Set();
 
-/*
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
 function is_authenticated(req, res, next){
-	if(req.session.user) return;
-	//error: cannot GET /login
-	//since /login router path uses POST.
-	//else res.redirect("/login");
-
-	//TODO: router redirect instead of sending the whole login/register html
-	res.sendFile(__dirname + "/public/login.html");
-}*/
+	//error: browser: cannot GET /
+	if(req.session.user) next();
+	else{
+		console.log("server directs client to /login.html");
+		res.sendFile(__dirname + "/public/login.html");
+		return;
+		//error: browswer: cannot GET / , since no next router for /
+		//next("route");
+	};
+}
 
 //Express Routing guide:
 //https://expressjs.com/en/guide/routing.html
@@ -69,16 +70,19 @@ function is_authenticated(req, res, next){
 //https://expressjs.com/en/starter/basic-routing.html
 
 //HTTP GET. a function handler for the home page.
-//app.get("/", is_authenticated, (req, res) => {
-app.get("/", (req, res) => {
-	if(req.session.user){
+app.get("/", is_authenticated, (req, res) => {
+	console.log("server directs client to /chat.html");
+	res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
+
+	/*if(req.session.user){
 		console.log("server directs client to /chat.html");
 		res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
 	}else{
 		console.log("server directs client to /login.html");
 		res.sendFile(__dirname + "/public/login.html");
-	}
+	}*/
 });
+
 
 //HTTP POST. chats.
 app.post("/messages", (req, res) => {
