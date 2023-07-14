@@ -132,7 +132,8 @@ app.post("/messages", (req, res) => {
 
 
 //HTTP GET. chats.
-app.get("/messages", (req, res) => {
+//restrict unlogged-in client to access router /messages for chat logs.
+app.get("/messages", is_authenticated, (req, res) => {
 	console.log();
 	console.log("server got HTTP GET /messages request.");
 
