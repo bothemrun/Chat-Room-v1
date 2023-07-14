@@ -1,3 +1,16 @@
+function redirect_home(){
+	path = "/";
+	console.log("client redirects to " + path);
+
+	const xhttp = new XMLHttpRequest();
+	xhttp.onload = function(){
+		console.log("client successfully redirects to " + path + " & received status:" + this.status + " " + this.statusText);
+		console.log(". with responseText:" + this.responseText);
+	};
+	xhttp.open("GET", path);
+	xhttp.setRequestHeader("Content-Type", "application/json");
+	xhttp.send();
+}
 
 function register(){
 	const input_username = document.getElementById("input_username");
@@ -51,6 +64,8 @@ function login(){
 			//TODO: username not found, already logged in, wrong password.
 
 			//TODO: add logged in state.
+
+			//TODO: redirect_home();
 		};
 
 		xhttp.open("POST", "/login");
@@ -71,22 +86,24 @@ function login(){
 }
 
 function logout(){
+	/* TODO: session username?
 	//TODO: get username & password from logged in state, not input box below.
 	const input_username = document.getElementById("input_username");
 	const input_password = document.getElementById("input_password");
 
 	console.log("client logs out with username:" + input_username.value + ", password:" + input_password.value);
+	*/
 
-	if(input_username && input_password){
+	//TODO: if(input_username && input_password){
+	if(true){
 		const xhttp = new XMLHttpRequest();
 
 		xhttp.onload = function(){
 			console.log("client successfully sent an HTTP POST /logout & received status:" + this.status + " " + this.statusText);
 			console.log(". with responseText:" + this.responseText);
-
 			//TODO: not logged in before.
-
 			//TODO: remove logged in state.
+			//TODO: redirect_home();
 		};
 
 		xhttp.open("POST", "/logout");
@@ -94,11 +111,15 @@ function logout(){
 		xhttp.setRequestHeader("Content-Type", "application/json");
 
 		xhttp.send(JSON.stringify({
+			"username":"lougout TODO",
+			"password":"logout TODO"
+		}));
+		/*xhttp.send(JSON.stringify({
 			"username":input_username.value,
 			"password":input_passoword.value
-		}));
+		}));*/
 	}else{
-		console.log("empty username / password input.");
-		window.alert("empty username / password input.");
+		/*console.log("empty username / password input.");
+		window.alert("empty username / password input.");*/
 	}
 }

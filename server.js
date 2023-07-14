@@ -19,6 +19,17 @@ const port = 3000
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("message_db.db");
 
+
+//user login by express-session
+//https://expressjs.com/en/resources/middleware/session.html
+const session = require("express-session");
+
+app.use(session({
+	secret: "https://expressjs.com/en/resources/middleware/session.html",
+	resave: false,
+	saveUninitialized: true
+}));
+
 //why not use static("/")?
 //the path that you provide to the express.static function is relative to the directory from where you launch your node process.
 //so static("/") will find a folder called "/".
@@ -38,7 +49,18 @@ app.use(express.json());
 //can have duplicate logged-in users.
 active_username_set = new Set();
 
+/*
+//user login by express-session
+//https://expressjs.com/en/resources/middleware/session.html
+function is_authenticated(req, res, next){
+	if(req.session.user) return;
+	//error: cannot GET /login
+	//since /login router path uses POST.
+	//else res.redirect("/login");
 
+	//TODO: router redirect instead of sending the whole login/register html
+	res.sendFile(__dirname + "/public/login.html");
+}*/
 
 //Express Routing guide:
 //https://expressjs.com/en/guide/routing.html
@@ -47,19 +69,28 @@ active_username_set = new Set();
 //https://expressjs.com/en/starter/basic-routing.html
 
 //HTTP GET. a function handler for the home page.
+//app.get("/", is_authenticated, (req, res) => {
 app.get("/", (req, res) => {
-	res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
+	if(req.session.user){
+		console.log("server directs client to /chat.html");
+		res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
+	}else{
+		console.log("server directs client to /login.html");
+		res.sendFile(__dirname + "/public/login.html");
+	}
 });
 
 //HTTP POST. chats.
 app.post("/messages", (req, res) => {
 	console.log();
 	console.log("server got HTTP POST /messages request.");
+	console.log("from req.session.user:" + req.session.user);
 
 	const timestamp_utc = (new Date()).toUTCString();
 
 	//socket.io emit the event to all clients
-	io.emit("new chat message", req.body.message, timestamp_utc);
+	//TODO: io.emit("new chat message", req.body.message, timestamp_utc);
+	io.emit("new chat message", req.session.user + ":" +  req.body.message, timestamp_utc);
 
 
 	//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
@@ -69,7 +100,8 @@ app.post("/messages", (req, res) => {
 
 	//run the SQL query with the param.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
-	db.run("INSERT INTO messages VALUES(?, ?)", req.body.message, timestamp_utc);
+	//TODO: db.run("INSERT INTO messages VALUES(?, ?)", req.body.message, timestamp_utc);
+	db.run("INSERT INTO messages VALUES(?, ?)", req.session.user + ":" + req.body.message, timestamp_utc);
 
 	//Sets the HTTP status for the response.
 	//https://expressjs.com/en/api.html#res.status
@@ -173,21 +205,31 @@ app.post("/login", (req, res) => {
 	console.log();
 	console.log("server got an HTTP POST /login request.");
 
-	db.all("SELECT * FROM accounts", (err, account_rows) => {
+	db.all("SELECT * FROM ACCOUNTS", (err, account_rows) => {
+		authen = false;
 		for(let account of account_rows){
-			if(account.username === req.body.username){
-				username_found = true;
-				if(account.password === req.body.password){
-					if(active_username_set.has(req.body.username) === true){
-						console.log("login: user already logged in.");
-						console.log("active username set: " + Array.from(active_username_set) );
+			if(account.username == req.body.username && account.password == req.body.password){
+				authen = true;
+				break;
+			}
+		}
+		console.log("login: authen:" + authen);
 
-						res.status(400);
-						res.json({
-							"login":"already logged in"
-						});
-						return;
-					}
+		if(authen === true){	
+			// regenerate the session, which is good practice to help
+			// guard against forms of session fixation
+			//https://expressjs.com/en/resources/middleware/session.html
+			req.session.regenerate(function(err) {
+				if(err) next(err);
+
+				req.session.user = req.body.username;
+
+				// save the session before redirection to ensure page
+	    		// load does not happen before session is saved
+				req.session.save(function(err) {
+					if(err) return next(err);
+					console.log("login: " + req.body.username + " saved to session successfully with req.session.user:" + req.session.user);
+					//TODO: frontend client executes the redirection to the home page /
 
 					console.log("login: " + req.body.username + " successful");
 
@@ -202,26 +244,18 @@ app.post("/login", (req, res) => {
 					//TODO: redirect to the chat room page.
 
 					return;
-				}else{
-					console.log("login: password incorrect !!!");
-					console.log("active username set: " + Array.from(active_username_set) );
-					res.status(403);
-					res.json({
-						"login":"password incorrect"
-					});
-
-					return;
-				}
-			}
+				});
+			});
+		}else{
+			console.log("login: not found or incorrect!!!");
+			console.log("active username set: " + Array.from(active_username_set) );
+			res.status(401);
+			res.json({
+				"login":"not found or incorrect"
+			});
+			return;
 		}
-
-		console.log("login: username not found !!!");
-		console.log("active username set: " + Array.from(active_username_set) );
-		res.status(401);
-		res.json({
-			"login":"username not found"
-		});
-	});
+	});//db.all()
 });
 
 
@@ -230,18 +264,35 @@ app.post("/logout", (req, res) => {
 	console.log();
 	console.log("server got an HTTP POST /logout request.");
 
-	if(active_username_set.has(req.body.username) === true){
-		console.log("logout: success.");
-
-		active_username_set.delete(req.body.username);
+	//if(active_username_set.has(req.body.username) === true){
+	if(req.session.user){
+		console.log("/logout: req.session.user:" + req.session.user);
+		
+		//active_username_set.delete(req.body.username);
+		active_username_set.delete(req.session.user);
 		console.log("active username set: " + Array.from(active_username_set) );
 
-		res.status(200);
-		res.json({
-			"logout":"success"
-		});
+		//https://expressjs.com/en/resources/middleware/session.html
+		delete req.session.user;
+		req.session.save(function(err) {
+			// regenerate the session, which is good practice to help
+		    // guard against forms of session fixation
+			req.session.regenerate(function(err) {
+				if(err) next(err);
+				//TODO: frontend client executes the redirection to the home page /
+				//res.redirect("/");
 
-		//TODO: redirect to the login page.
+				console.log("logout: success.");
+
+
+				res.status(200);
+				res.json({
+					"logout":"success"
+				});
+
+				//TODO: redirect to the login page.
+			});
+		});
 	}else{
 		console.log("logout: username not active.");
 		console.log("active username set: " + Array.from(active_username_set) );
