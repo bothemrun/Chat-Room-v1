@@ -3,16 +3,40 @@
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
 const socket = io();
 
-const chat_logs = document.getElementById("chat_logs");
+function create_div(class_, id, textContent){
+	const div = document.createElement("div");
+	if(class_ !== "") div.setAttribute("class", class_);
+	if(id !== "") div.setAttribute("id", id);
+	if(textContent !== "") div.textContent = textContent;
+	return div;
+}
 
 function append_new_chat_log(new_msg, timestamp_utc, username){
 	//time zone converted from server utc to client local.
-	const timestamp_local = (new Date(timestamp_utc)).toString();
+	const timestamp_local_all = (new Date(timestamp_utc)).toString();
+	const timestamp_local = timestamp_local_all.substring(0, 22);
 
+	const chat_logs = document.getElementById("chat_logs");
+
+	const chat_post = create_div("chat_post", "", "");
+
+	chat_post.appendChild( create_div("inline", "username", username) );
+	chat_post.appendChild( create_div("inline", "timestamp", timestamp_local) );
+	chat_post.appendChild( create_div("chat_text", "", new_msg) );
+
+	//remove blank bar at the bottom of each chat post div.
+	const separate_div = create_div("separate_div", "", "");
+	separate_div.appendChild( document.createElement("br") );
+	chat_post.appendChild( separate_div );
+
+	chat_logs.appendChild( chat_post );
+
+	/*
 	//add a new entry <li> to a list <ul>
 	const new_msg_li = document.createElement("li");
 	new_msg_li.textContent = "[" + username + "]: " + new_msg + "||    " + timestamp_local;
 	chat_logs.appendChild(new_msg_li);
+	*/
 
 	//chats scrolled down to the latest.
 	window.scrollTo(0, document.body.scrollHeight);

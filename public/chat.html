@@ -4,18 +4,20 @@
 	<head>
 		<title> Chat-Room-v1 Chat Room</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<style>
-			/*CSS TODO*/
-		</style>
+		<link rel="stylesheet" href="style.css">
 		<script src=/socket.io/socket.io.js></script>
 
 	</head>
 
 	<body>
 		<h1>Chat Room v1. Chat Room.</h1>
-		<p>input text messages below in the form.</p>
 
-		<ul id="chat_logs"></ul>
+		<!--logout() in login.js not included & not defined.-->
+		<button onclick="logout()">Log out</button>
+
+		<div id="chat_logs">
+		</div>
+
 
 		<!--don't need a form, which would submit texts if press enter and reload.-->
 		<label for="input_chat">Input chat message:</label>
@@ -25,8 +27,6 @@
 		<button onclick="call_send_message_api()">Send</button>
 
 
-		<!--logout() in login.js not included & not defined.-->
-		<button onclick="logout()">Log out</button>
 
 		<script src="chat.js"></script>
 

@@ -1,0 +1,37 @@
+.chat_post {
+    background-color: rgb(60, 60, 60);
+}
+.chat_post .inline {
+    background-color: rgb(60, 60, 60);
+}
+.chat_post .chat_text{
+    background-color: rgb(60, 60, 60);
+}
+
+.inline { 
+    display: inline-block; 
+    margin:10px;
+}
+#username {
+    font-size: 44px;
+    font-weight: bold;
+}
+#timestamp {
+    font-size: 2px;
+    color: rgb(255, 60, 60);
+    float: right;
+}
+.chat_text {
+    font-size: 32px;
+    /*margin: 6px;*/
+    padding: 10px;
+}
+
+.separate_div {
+    background-color: rgb(20, 20, 20);
+}
+
+*{
+    background-color: rgb(20, 20, 20);
+    color: rgb(220, 220, 20);
+}
