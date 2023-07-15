@@ -13,8 +13,22 @@ function create_div(class_, id, textContent){
 
 function append_new_chat_log(new_msg, timestamp_utc, username){
 	//time zone converted from server utc to client local.
-	const timestamp_local_all = (new Date(timestamp_utc)).toString();
-	const timestamp_local = timestamp_local_all.substring(0, 22);
+	//const timestamp_local = (new Date(timestamp_utc)).toString();
+	const d = new Date(timestamp_utc);
+	const year = d.getFullYear();
+	const month = d.getMonth();
+	const date = d.getDate();
+	let hour = d.getHours();
+	const minute = d.getMinutes();
+	let ampm = "";
+	if(hour >= 12){
+		ampm = "PM";
+		hour -= 12;
+	}else{
+		ampm = "AM";
+	}
+	const timestamp_local = month + "." + date + "." + year + " " + hour + ":" + minute + ampm;
+
 
 	const chat_logs = document.getElementById("chat_logs");
 
