@@ -7,6 +7,16 @@
 		<link rel="stylesheet" href="chat.css">
 		<script src=/socket.io/socket.io.js></script>
 
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("#logout").on("click", logout);
+			})
+
+			$(document).ready(function(){
+				$("#send_chat_button").on("click", call_send_message_api);
+			});
+		</script>
 	</head>
 
 	<body>
@@ -16,7 +26,8 @@
 
 			<!-- <button id="logout" onclick="logout()">Logout</button> -->
 			<div id="logout_div">
-				<button id="logout" onclick="logout()">Logout</button>
+				<!-- <button id="logout" onclick="logout()">Logout</button> -->
+				<button id="logout">Logout</button>
 			</div>
 		</div>
 
@@ -42,17 +53,11 @@
 	
 		<div class="navbar2">
 			<div id="send_chat_button_div">
-				<button id="send_chat_button" onclick="call_send_message_api()">Post</button>
+				<!-- <button id="send_chat_button" onclick="call_send_message_api()">Post</button> -->
+				<button id="send_chat_button">Post</button>
 			</div>
 		</div>
 
-		<!--
-		<div class="bottom_bar">
-			<div class="send_chat_button_container">
-				<button id="send_chat_button" onclick="call_send_message_api()">Post</button>
-			</div>
-		</div>
-		-->
 
 
 		<script src="chat.js"></script>
