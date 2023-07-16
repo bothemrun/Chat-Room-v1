@@ -8,6 +8,7 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 		<script>
 			$(document).ready(function(){
+				//on(event, handler): hander is a function, not the execution.
 				//https://stackoverflow.com/questions/44611871/calling-jquery-event-handler-on-click-anonymous-vs-named-function-behaviour
 				$("#button_login").on("click", login);
 
@@ -17,6 +18,10 @@
 				//$("#button_login").on("click", function(){
 				//	login();
 				//});
+			});
+
+			$(document).ready(function(){
+				$("#button_register").on("click", register);
 			});
 		</script>
 	</head>
@@ -32,8 +37,9 @@
 
 		<div id="navbar_login">
 			<!-- <button class="button_login" onclick="login()">Login</button> -->
+			<!-- <button class="button_login" onclick="register()">Register</button> -->
 			<button class="button_login" id="button_login">Login</button>
-			<button class="button_login" onclick="register()">Register</button>
+			<button class="button_login" id="button_register">Register</button>
 		</div>
 
 		<script src="login.js"></script>
