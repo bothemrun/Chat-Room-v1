@@ -10,10 +10,21 @@
 	</head>
 
 	<body>
-		<h1>Chat Room v1. Chat Room.</h1>
+		<!-- <h1>Chat Room v1. Chat Room.</h1> -->
+		<div class="navbar">
+			<div id="title">Chat Room v1</div>
+
+			<!-- <button id="logout" onclick="logout()">Logout</button> -->
+			<div id="logout_div">
+				<button id="logout" onclick="logout()">Logout</button>
+			</div>
+		</div>
+
+		<!-- prevent the navigation bar to block the topmost chat post. -->
+		<div><br><br><br></div>
 
 		<!--logout() in login.js not included & not defined.-->
-		<button onclick="logout()">Log out</button>
+		<!-- <button onclick="logout()">Log out</button> -->
 
 		<div id="chat_logs">
 		</div>

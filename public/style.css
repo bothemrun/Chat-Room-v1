@@ -1,3 +1,4 @@
+/*chat post*/
 .chat_post {
     background-color: rgb(60, 60, 60);
 }
@@ -13,7 +14,7 @@
     margin:10px;
 }
 #username {
-    font-size: 44px;
+    font-size: 38px;
     font-weight: bold;
 }
 #timestamp {
@@ -22,7 +23,7 @@
     float: right;
 }
 .chat_text {
-    font-size: 32px;
+    font-size: 28px;
     /*margin: 6px;*/
     padding: 10px;
 }
@@ -35,3 +36,33 @@
     background-color: rgb(20, 20, 20);
     color: rgb(220, 220, 20);
 }
+
+/*navigation bar fixed at the top for the title & logout button*/
+.navbar {
+	background-color: rgb(250, 120, 30);
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+.navbar #title {
+	background-color: rgb(250, 120, 30);
+	float: left;
+	display: block;
+	font-size: 38px;
+	text-align: center;
+	padding: 8px;
+}
+.navbar #logout_div {
+	background-color: rgb(250, 120, 30);
+	display: block;
+	float: right;
+	margin: 10px;
+}
+.navbar #logout {
+	display: block;
+	background-color: rgb(80, 250, 80);
+	text-align: center;
+	padding: 8px;
+	margin: 8px;
+}
+
