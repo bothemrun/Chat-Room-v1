@@ -4,6 +4,21 @@
 		<title>Chat-Room-v1 Login Register</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
 		<link rel="stylesheet" href="login.css">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				//https://stackoverflow.com/questions/44611871/calling-jquery-event-handler-on-click-anonymous-vs-named-function-behaviour
+				$("#button_login").on("click", login);
+
+				//$("#button_login").on("click", login());//automatically triggered without user clicking
+
+				//works.
+				//$("#button_login").on("click", function(){
+				//	login();
+				//});
+			});
+		</script>
 	</head>
 
 	<body>
@@ -16,7 +31,8 @@
 		<input type="password" id="input_password" class="input_userinfo">
 
 		<div id="navbar_login">
-			<button class="button_login" onclick="login()">Login</button>
+			<!-- <button class="button_login" onclick="login()">Login</button> -->
+			<button class="button_login" id="button_login">Login</button>
 			<button class="button_login" onclick="register()">Register</button>
 		</div>
 
