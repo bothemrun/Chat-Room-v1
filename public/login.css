@@ -1,0 +1,29 @@
+*{
+    background-color: rgb(20, 20, 20);
+    color: rgb(220, 220, 20);
+}
+
+.input_userinfo {
+	width: 100%;
+}
+
+
+#login_title {
+	text-align: center;
+	font-size: 44px;
+	font-weight: bold;
+}
+#navbar_login {
+	display: flex;
+	justify-content: center;
+	
+	width: 100%;
+}
+.button_login {
+	background-color: rgb(250, 120, 30);
+	text-align: center;
+	display: inline-block;
+	padding: 10px 20px;
+	margin: 3px;
+	width: 100%;
+}
