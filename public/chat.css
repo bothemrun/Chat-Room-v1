@@ -1,6 +1,19 @@
+*{
+    background-color: rgb(20, 20, 20);
+    color: rgb(220, 220, 20);
+}
+
+/*textarea*/
+.input_chat {
+	width: 100%;
+}
+
+
 /*chat post*/
 .chat_post {
     background-color: rgb(60, 60, 60);
+
+	width: 100%;
 }
 .chat_post .inline {
     background-color: rgb(60, 60, 60);
@@ -30,11 +43,6 @@
 
 .separate_div {
     background-color: rgb(20, 20, 20);
-}
-
-*{
-    background-color: rgb(20, 20, 20);
-    color: rgb(220, 220, 20);
 }
 
 
@@ -71,7 +79,7 @@
 /*send chat input button bar*/
 .navbar2 {
 	background-color: rgb(250, 120, 30);
-	width: 102%;
+	width: 104%;
 
 	height:50px;
 	position: relative;

@@ -3,23 +3,22 @@
 	<head>
 		<title>Chat-Room-v1 Login Register</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<style>
-			/*CSS TODO*/
-		</style>
+		<link rel="stylesheet" href="login.css">
 	</head>
 
 	<body>
-		<h1>Chat Room v1. Login Register.</h1>
-		<p>Please log in or register an account.</p>
+		<h1 id="login_title">Chat Room v1</h1>
 
-		<label for="input_username">Input username:</label>
-		<input type="text" id=input_username>
+		<label for="input_username">Username</label>
+		<input type="text" id=input_username class="input_userinfo">
 
-		<label for="input_password">Input password:</label>
-		<input type="password" id="input_password">
+		<label for="input_password">Password</label>
+		<input type="password" id="input_password" class="input_userinfo">
 
-		<button onclick="login()">login</button>
-		<button onclick="register()">register</button>
+		<div id="navbar_login">
+			<button class="button_login" onclick="login()">Login</button>
+			<button class="button_login" onclick="register()">Register</button>
+		</div>
 
 		<script src="login.js"></script>
 	</body>
