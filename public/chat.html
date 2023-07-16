@@ -38,8 +38,21 @@
 		<textarea id="input_chat" rows="4" cols="25"></textarea>
 
 		<!--<button type="submit">Send</button>-->
-		<button onclick="call_send_message_api()">Send</button>
+		<!-- <button onclick="call_send_message_api()">Send</button> -->
+	
+		<div class="navbar2">
+			<div id="send_chat_button_div">
+				<button id="send_chat_button" onclick="call_send_message_api()">Post</button>
+			</div>
+		</div>
 
+		<!--
+		<div class="bottom_bar">
+			<div class="send_chat_button_container">
+				<button id="send_chat_button" onclick="call_send_message_api()">Post</button>
+			</div>
+		</div>
+		-->
 
 
 		<script src="chat.js"></script>
