@@ -20,6 +20,7 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("message_db.db");
 
 const User = require("./models/user").User;
+const Error_Code = require("./util/error_code");
 
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
@@ -174,30 +175,24 @@ app.post("/register", async (req, res) => {
 	console.log(req.body);
 	console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
-	let ret = 0;
 	try{
 		const user = new User(req.body.username, req.body.password);
-		ret = await user.register();
+		await user.register();
 	}catch(err){
-		console.log("[error] [server.js: app.post /register]");
+		console.log("[error] [server.js: app.post /register]" + err);
 		res.status(400);
 		res.json({
 			"register":"error."
 		});
+		
+		//NOTE: must return. or will go the next lines outside the catch block.
+		return;
 	}
 
-	console.log("User.register() ret: " + ret);
-	if(ret === 0){
-		res.status(201);
-		res.json({
-			"register":"success"
-		});
-	}else{
-		res.status(400);
-		res.json({
-			"register":"username conflict"
-		});
-	}
+	res.status(201);
+	res.json({
+		"register":"success"
+	});
 
 	/*
 	//get all account usernames
