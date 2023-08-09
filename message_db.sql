@@ -5,6 +5,7 @@ CREATE TABLE messages (
 );
 
 CREATE TABLE accounts (
-	username varchar(255),
-	password varchar(255)
+	username varchar(255) NOT NULL,
+	password varchar(255) NOT NULL,
+	PRIMARY KEY (username)
 );
