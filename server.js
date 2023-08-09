@@ -19,6 +19,7 @@ const port = 3000
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("message_db.db");
 
+const User = require("./models/user").User;
 
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
