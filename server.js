@@ -167,26 +167,43 @@ app.get("/messages", is_authenticated, (req, res) => {
 
 
 //HTTP POST. register.
-app.post("/register", (req, res) => {
+app.post("/register", async (req, res) => {
 	console.log();
 	console.log("server got HTTP POST register request.");
 
 	console.log(req.body);
 	console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
+	let ret = 0;
+	try{
+		const user = new User(req.body.username, req.body.password);
+		ret = await user.register();
+	}catch(err){
+		console.log("[error] [server.js: app.post /register]");
+		res.status(400);
+		res.json({
+			"register":"error."
+		});
+	}
+
+	console.log("User.register() ret: " + ret);
+	if(ret === 0){
+		res.status(201);
+		res.json({
+			"register":"success"
+		});
+	}else{
+		res.status(400);
+		res.json({
+			"register":"username conflict"
+		});
+	}
+
+	/*
 	//get all account usernames
 	//db.all("SELECT * FROM accounts", (err, account_rows) => {
 	db.all(`SELECT * FROM accounts WHERE username = \"${ req.body.username }\"`, (err, account_rows) => {
 		const username_conflict = account_rows.length !== 0;
-		/*username_conflict = false;
-
-		for(let account of account_rows){
-			if(account.username === req.body.username){
-				console.log("register: username conflict.");
-				username_conflict = true;
-				break;
-			}
-		}*/
 
 		//callback hell: javascript uses nonblocking I/O.
 		if(username_conflict === true){
@@ -205,6 +222,7 @@ app.post("/register", (req, res) => {
 			"register":"success"
 		});
 	});
+	*/
 
 });
 
