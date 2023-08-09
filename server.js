@@ -213,14 +213,16 @@ app.post("/login", (req, res) => {
 	console.log();
 	console.log("server got an HTTP POST /login request.");
 
-	db.all("SELECT * FROM ACCOUNTS", (err, account_rows) => {
-		authen = false;
+	//db.all("SELECT * FROM ACCOUNTS", (err, account_rows) => {
+		/*authen = false;
 		for(let account of account_rows){
 			if(account.username == req.body.username && account.password == req.body.password){
 				authen = true;
 				break;
 			}
-		}
+		}*/
+	db.all(`SELECT * FROM accounts where username = \"${ req.body.username }\" AND password = \"${ req.body.password }\"`, (err, account_rows) => {
+		const authen = account_rows.length !== 0;
 		console.log("login: authen:" + authen);
 
 		if(authen === true){	
