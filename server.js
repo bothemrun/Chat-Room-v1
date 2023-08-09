@@ -103,7 +103,6 @@ app.post("/messages", (req, res) => {
 	const timestamp_utc = (new Date()).toUTCString();
 
 	//socket.io emit the event to all clients
-	//TODO: io.emit("new chat message", req.body.message, timestamp_utc);
 	io.emit("new chat message", req.body.message, timestamp_utc, req.session.user);
 
 
@@ -114,7 +113,6 @@ app.post("/messages", (req, res) => {
 
 	//run the SQL query with the param.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
-	//TODO: db.run("INSERT INTO messages VALUES(?, ?)", req.body.message, timestamp_utc);
 	db.run("INSERT INTO messages VALUES(?, ?, ?)", req.body.message, timestamp_utc, req.session.user);
 
 	//Sets the HTTP status for the response.
@@ -176,8 +174,10 @@ app.post("/register", (req, res) => {
 	console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
 	//get all account usernames
-	db.all("SELECT * FROM accounts", (err, account_rows) => {
-		username_conflict = false;
+	//db.all("SELECT * FROM accounts", (err, account_rows) => {
+	db.all(`SELECT * FROM accounts WHERE username = \"${ req.body.username }\"`, (err, account_rows) => {
+		const username_conflict = account_rows.length !== 0;
+		/*username_conflict = false;
 
 		for(let account of account_rows){
 			if(account.username === req.body.username){
@@ -185,7 +185,7 @@ app.post("/register", (req, res) => {
 				username_conflict = true;
 				break;
 			}
-		}
+		}*/
 
 		//callback hell: javascript uses nonblocking I/O.
 		if(username_conflict === true){
