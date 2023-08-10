@@ -1,7 +1,9 @@
 //MVC: user model
-
-const Error_Code = require("../util/error_code");
+const Status_Code = require("../util/status_code");
 const DB_Promise = require("../util/db_promise");
+
+const Authentication = require("./authentication.js").Authentication;
+const auth = new Authentication();
 
 class User{
 	constructor(username, password){
@@ -12,8 +14,6 @@ class User{
 	async register(){
 		console.log("[models/user.js: User.register()].");
 
-		//TODO: use SQL primary key. only use SQL INSERT without SQL SELECT
-		//TODO: sqlite3 doesn't support Promise, can't use await. maybe use sqlite?
 		try{
 			await DB_Promise.db_run(`INSERT INTO accounts VALUES(\"${ this.username }\", \"${ this.password }\")`);
 		}catch(err){
@@ -22,32 +22,44 @@ class User{
 		}
 
 		console.log("register(): success.");
+	}
 
-		/*
+	async login(req){
+		console.log("[models/user.js: User.login()].");
+
 		let account_rows;
 		try{
-			account_rows = await db_all(`SELECT * FROM accounts WHERE username = \"${ this.username }\"`);
+			account_rows = await DB_Promise.db_all(`SELECT * FROM accounts WHERE username = \"${ this.username }\" AND password = \"${ this.password }\"`);
 		}catch(err){
-			console.log("[error] db_all error:" + err);
-			throw Error_Code.DATABASE_ERROR;
+			console.log("[error] login(): " + err);
+			throw err;
 		}
 
-		if(account_rows.length !== 0){
-			//username conflict
-			console.log("register() username conflict!!");
-			throw Error_Code.USERNAME_CONFLICT;
-		}else{
-			//TODO: promise
-			db.run("INSERT INTO accounts VALUES(?, ?)", this.username, this.password);
-			return;
+		if(account_rows.length === 0){
+			throw Status_Code.LOGIN_FAIL;
 		}
-		*/
+
+		try{
+			await auth.login(req);
+		}catch(err){
+			console.log("[error] login() auth: " + err);
+			throw err;
+		}
 	}
 
-	login(){
-	}
+	async logout(req){
+		console.log("[models/user.js: User.logout()].");
+		if(auth.is_logged_in(req) === false){
+			console.log("[error] logout() user not active in session.");
+			throw Status_Code.LOGOUT_FAIL;
+		}
 
-	logout(){
+		try{
+			await auth.logout(req);
+		}catch(err){
+			console.log("[error] logout() auth: " + err);
+			throw err;
+		}
 	}
 }
 
