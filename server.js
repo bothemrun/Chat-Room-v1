@@ -14,11 +14,9 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = 3000
 
-//Sets the execution mode to verbose to produce long stack traces.
-//https://github.com/TryGhost/node-sqlite3/wiki/API
-const sqlite3 = require("sqlite3").verbose();
-const db = new sqlite3.Database("message_db.db");
-
+//MVC Models
+const Chat_Room = require("./models/chat_room").Chat_Room;
+const public_chat_room = new Chat_Room();
 
 //MVC Views
 const login_page_view = require("./views/login_page_view");
@@ -64,7 +62,7 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 
 
-//all logged-in users.
+//TODO: move to models.
 //can have duplicate logged-in users.
 active_username_set = new Set();
 
@@ -94,7 +92,7 @@ app.get("/", is_authenticated_redirect_login, (req, res) => {
 
 
 //HTTP POST. chats.
-app.post("/messages", (req, res) => {
+app.post("/messages", async (req, res) => {
 	console.log();
 	console.log("server got HTTP POST /messages request.");
 	console.log("from req.session.username:" + req.session.username);
@@ -110,57 +108,48 @@ app.post("/messages", (req, res) => {
 	console.log(req.body);
 	console.log("experss POST: server got a new message:" + req.body.message + ", on timestamp_utc:" + timestamp_utc);
 
-	//run the SQL query with the param.
-	//https://github.com/TryGhost/node-sqlite3/wiki/API
-	db.run("INSERT INTO messages VALUES(?, ?, ?)", req.body.message, timestamp_utc, req.session.username);
+	try{
+		await public_chat_room.save_chat_message(req.body.message, timestamp_utc, req.session.username);
+	}catch(err){
+		console.log("[error] [server.js app.post /messages save_chat_message()]: " + err);
+		res.status(500);
+		res.json({
+			"messages": "database error."
+		});
+		return;
+	}
 
-	//Sets the HTTP status for the response.
-	//https://expressjs.com/en/api.html#res.status
 	res.status(201);
-
-	//Sends a JSON response.
-	//This method sends a response (with the correct content-type) that is the parameter converted to a JSON string using JSON.stringify().
-	//The parameter can be any JSON type, including object, array, string, Boolean, number, or null, and you can also use it to convert other values to JSON.
-	//https://expressjs.com/en/api.html#res.status
 	res.json({
-		"message":true
+		"messages":true
 	});
 });
 
 
 //HTTP GET. chats.
 //restrict unlogged-in client to access router /messages for chat logs.
-app.get("/messages", is_authenticated_redirect_login, (req, res) => {
+app.get("/messages", is_authenticated_redirect_login, async (req, res) => {
 	console.log();
 	console.log("server got HTTP GET /messages request.");
 
 	console.log("client asks for messages.");
 
-	msgs = []
-
-	//run the SQL query with the callback function.
-	//https://github.com/TryGhost/node-sqlite3/wiki/API
-	db.all("SELECT * FROM messages", (err, msg_rows) => {
-		for(let msg of msg_rows){
-			//console.log(msg);
-			msgs.push(msg);
-		}
-
-		//console.log("print msgs:");
-		//console.log(msgs);
-
-		//Sets the HTTP status for the response.
-		//https://expressjs.com/en/api.html#res.status
-		res.status(200);
-
-		//Sends a JSON response. This method sends a response (with the correct Content-Type) that is the parameter converted to a JSON string using JSON.stringify().
-		//The parameter can be any JSON type, including object, array, string, Boolean, number, or null, and you can also use it to convert other values to JSON.
-		//https://expressjs.com/en/4x/api.html#res.json
+	let msgs;
+	try{
+		msgs = await public_chat_room.get_all_chat_messages();
+	}catch(err){
+		console.log("[error] [server.js app.get /messages get_all_chat_messages()]: " + err);
+		res.status(500);
 		res.json({
-			"data":msgs
+			"data": "database error."
 		});
-	});
+		return;
+	}
 
+	res.status(200);
+	res.json({
+		"data": msgs
+	});
 });
 
 
