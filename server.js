@@ -14,9 +14,6 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = 3000
 
-//MVC Models
-const Chat_Room = require("./models/chat_room").Chat_Room;
-const public_chat_room = new Chat_Room();
 
 //MVC Views
 const login_page_view = require("./views/login_page_view");
@@ -24,6 +21,9 @@ const chat_room_view = require("./views/chat_room_view");
 
 //MVC Controllers
 const user_controller = require("./controllers/user_controller");
+const Chat_Room_Controller = require("./controllers/chat_room_controller").Chat_Room_Controller;
+const public_chat_room_controller = new Chat_Room_Controller(io);
+
 
 const auth = require("./util/authentication").Authentication;
 
@@ -79,12 +79,6 @@ function is_authenticated_redirect_login(req, res, next){
 	};
 }
 
-//Express Routing guide:
-//https://expressjs.com/en/guide/routing.html
-
-//Routing refers to determining how an application responds to a client request to a particular endpoint, which is a URI (or path) and a specific HTTP request method (GET, POST, and so on).
-//https://expressjs.com/en/starter/basic-routing.html
-
 //HTTP GET. a function handler for the home page.
 app.get("/", is_authenticated_redirect_login, (req, res) => {
 	chat_room_view.chat_room(res);
@@ -92,65 +86,12 @@ app.get("/", is_authenticated_redirect_login, (req, res) => {
 
 
 //HTTP POST. chats.
-app.post("/messages", async (req, res) => {
-	console.log();
-	console.log("server got HTTP POST /messages request.");
-	console.log("from req.session.username:" + req.session.username);
-
-	const timestamp_utc = (new Date()).toUTCString();
-
-	//socket.io emit the event to all clients
-	io.emit("new chat message", req.body.message, timestamp_utc, req.session.username);
-
-
-	//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
-	//https://expressjs.com/en/api.html#req.body
-	console.log(req.body);
-	console.log("experss POST: server got a new message:" + req.body.message + ", on timestamp_utc:" + timestamp_utc);
-
-	try{
-		await public_chat_room.save_chat_message(req.body.message, timestamp_utc, req.session.username);
-	}catch(err){
-		console.log("[error] [server.js app.post /messages save_chat_message()]: " + err);
-		res.status(500);
-		res.json({
-			"messages": "database error."
-		});
-		return;
-	}
-
-	res.status(201);
-	res.json({
-		"messages":true
-	});
-});
-
+//app.post("/messages", public_chat_room_controller.save_chat_message);
+app.post("/messages", public_chat_room_controller.save_chat_message.bind(public_chat_room_controller));
 
 //HTTP GET. chats.
 //restrict unlogged-in client to access router /messages for chat logs.
-app.get("/messages", is_authenticated_redirect_login, async (req, res) => {
-	console.log();
-	console.log("server got HTTP GET /messages request.");
-
-	console.log("client asks for messages.");
-
-	let msgs;
-	try{
-		msgs = await public_chat_room.get_all_chat_messages();
-	}catch(err){
-		console.log("[error] [server.js app.get /messages get_all_chat_messages()]: " + err);
-		res.status(500);
-		res.json({
-			"data": "database error."
-		});
-		return;
-	}
-
-	res.status(200);
-	res.json({
-		"data": msgs
-	});
-});
+app.get("/messages", is_authenticated_redirect_login, public_chat_room_controller.get_all_chat_messages);
 
 
 //HTTP POST. register.
@@ -164,7 +105,6 @@ app.post("/logout", user_controller.logout);
 
 
 
-//socket.io emit the event
 io.on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
 });
