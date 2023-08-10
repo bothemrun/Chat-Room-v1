@@ -21,6 +21,7 @@ const db = new sqlite3.Database("message_db.db");
 
 const User = require("./models/user").User;
 
+const auth = new (require("./models/authentication").Authentication)();
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
 const session = require("express-session");
@@ -65,7 +66,8 @@ active_username_set = new Set();
 //https://expressjs.com/en/resources/middleware/session.html
 function is_authenticated(req, res, next){
 	//error: browser: cannot GET /
-	if(req.session.user) next();
+	//if(req.session.user) next();
+	if(auth.is_logged_in(req) === true) next();
 	else{
 		console.log("server directs client to /login.html");
 		res.sendFile(__dirname + "/public/login.html");
@@ -144,6 +146,10 @@ app.get("/messages", is_authenticated, (req, res) => {
 		console.log("print msgs:");
 		console.log(msgs);
 
+		//Sets the HTTP status for the response.
+		//https://expressjs.com/en/api.html#res.status
+		res.status(200);
+
 		//Sends a JSON response. This method sends a response (with the correct Content-Type) that is the parameter converted to a JSON string using JSON.stringify().
 		//The parameter can be any JSON type, including object, array, string, Boolean, number, or null, and you can also use it to convert other values to JSON.
 		//https://expressjs.com/en/4x/api.html#res.json
@@ -152,10 +158,6 @@ app.get("/messages", is_authenticated, (req, res) => {
 		});
 	});
 
-	//TODO: should res.status() before res.json() ?
-	//Sets the HTTP status for the response.
-	//https://expressjs.com/en/api.html#res.status
-	res.status(200);
 });
 
 
@@ -173,9 +175,8 @@ app.post("/register", async (req, res) => {
 		res.json({
 			"register":"error."
 		});
-		
-		//TODO: NOTE: must return. or will go the next lines outside the catch block.
-		console.log("register(): after res.json(), before return;");
+	
+		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
@@ -196,18 +197,22 @@ app.post("/login", async (req, res) => {
 		await user.login(req);
 	}catch(err){
 		console.log("[error] [server.js: app.post /login]" + err);
+		console.log("active_username_set: " + Array.from(active_username_set) );
+
 		res.status(401);
 		res.json({
 			"login": "login fail"
 		});
 
-		//TODO
-		console.log("login(): after res.json(), before return;");
+		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
 	console.log("login(): ok");
 	console.log("req.session.user: " + req.session.user);
+	active_username_set.add(req.body.username);
+	console.log("active_username_set: " + Array.from(active_username_set) );
+
 	res.status(200);
 	res.json({
 		"login": "success"
@@ -218,9 +223,9 @@ app.post("/login", async (req, res) => {
 //HTTP POST. logout
 app.post("/logout", async (req, res) => {
 	console.log();
-	console.log("sever POST logout: got a logout (username, password): (" + req.body.username + ", " + req.body.password + ").");
+	console.log("sever POST logout: got a logout (username, password): (" + req.session.user + ", ****).");
 
-	const user = new User(req.body.username, req.body.password);
+	const user = new User(req.session.username, null);
 	try{
 		await user.logout(req);
 	}catch(err){
@@ -230,12 +235,15 @@ app.post("/logout", async (req, res) => {
 			"logout": "logout fail"
 		});
 
-		//TODO
-		console.log("logout(): after res.json(), before return;");
+		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
 	console.log("logout(): ok");
+	//TODO:
+	active_username_set.delete(req.body.username);
+	console.log("active_username_set: " + Array.from(active_username_set) );
+
 	res.status(200);
 	res.json({
 		"logout": "success"
