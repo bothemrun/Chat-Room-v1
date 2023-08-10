@@ -1,6 +1,8 @@
 
 //typescript compiled enum styles:
 module.exports = {
+	LOGIN_FAIL: "LOGIN_FAIL",
+	LOGOUT_FAIL: "LOGOUT_FAIL",
 	CODE_ERROR: "CODE_ERROR",
 	DATABASE_ERROR: "DATABASE_ERROR",
 	USERNAME_CONFLICT: "USERNAME_CONFLICT",

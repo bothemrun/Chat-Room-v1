@@ -2,12 +2,12 @@ const express = require("express");
 
 //top-level Express function / an Express server instance.
 //initialize a function handler supplied to an HTTP server.
-const app = require("express")();//TODO: `express()`
+const app = require("express")();
 
 //node.js http module's Server class.
 //specify the requestListener function.
 //https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
-const http = require("http").Server(app);//TODO: use socket.io example: createServer()
+const http = require("http").Server(app);
 
 //initialize a new instance of socket.io by the HTTP server object.
 //https://socket.io/get-started/chat
@@ -20,7 +20,6 @@ const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("message_db.db");
 
 const User = require("./models/user").User;
-const Error_Code = require("./util/error_code");
 
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
@@ -61,6 +60,7 @@ app.use(express.json());
 //can have duplicate logged-in users.
 active_username_set = new Set();
 
+//TODO: move to auth class ?
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
 function is_authenticated(req, res, next){
@@ -84,15 +84,7 @@ function is_authenticated(req, res, next){
 //HTTP GET. a function handler for the home page.
 app.get("/", is_authenticated, (req, res) => {
 	console.log("server directs client to /chat.html");
-	res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
-
-	/*if(req.session.user){
-		console.log("server directs client to /chat.html");
-		res.sendFile(__dirname + "/public/chat.html"); //TODO: login.html
-	}else{
-		console.log("server directs client to /login.html");
-		res.sendFile(__dirname + "/public/login.html");
-	}*/
+	res.sendFile(__dirname + "/public/chat.html");
 });
 
 
@@ -170,13 +162,10 @@ app.get("/messages", is_authenticated, (req, res) => {
 //HTTP POST. register.
 app.post("/register", async (req, res) => {
 	console.log();
-	console.log("server got HTTP POST register request.");
-
-	console.log(req.body);
 	console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
+	const user = new User(req.body.username, req.body.password);
 	try{
-		const user = new User(req.body.username, req.body.password);
 		await user.register();
 	}catch(err){
 		console.log("[error] [server.js: app.post /register]" + err);
@@ -185,7 +174,8 @@ app.post("/register", async (req, res) => {
 			"register":"error."
 		});
 		
-		//NOTE: must return. or will go the next lines outside the catch block.
+		//TODO: NOTE: must return. or will go the next lines outside the catch block.
+		console.log("register(): after res.json(), before return;");
 		return;
 	}
 
@@ -193,139 +183,63 @@ app.post("/register", async (req, res) => {
 	res.json({
 		"register":"success"
 	});
-
-	/*
-	//get all account usernames
-	//db.all("SELECT * FROM accounts", (err, account_rows) => {
-	db.all(`SELECT * FROM accounts WHERE username = \"${ req.body.username }\"`, (err, account_rows) => {
-		const username_conflict = account_rows.length !== 0;
-
-		//callback hell: javascript uses nonblocking I/O.
-		if(username_conflict === true){
-			console.log("register: username conflict.");
-			res.status(400);
-			res.json({
-				"register":"username conflict"
-			});
-			return;
-		}
-
-		console.log("register: successful.");
-		db.run("INSERT INTO accounts VALUES(?, ?)", req.body.username, req.body.password);
-		res.status(201);
-		res.json({
-			"register":"success"
-		});
-	});
-	*/
-
 });
 
 
 //HTTP POST. login
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
 	console.log();
-	console.log("server got an HTTP POST /login request.");
+	console.log("sever POST login: got a login (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
-	//db.all("SELECT * FROM ACCOUNTS", (err, account_rows) => {
-		/*authen = false;
-		for(let account of account_rows){
-			if(account.username == req.body.username && account.password == req.body.password){
-				authen = true;
-				break;
-			}
-		}*/
-	db.all(`SELECT * FROM accounts where username = \"${ req.body.username }\" AND password = \"${ req.body.password }\"`, (err, account_rows) => {
-		const authen = account_rows.length !== 0;
-		console.log("login: authen:" + authen);
+	const user = new User(req.body.username, req.body.password);
+	try{
+		await user.login(req);
+	}catch(err){
+		console.log("[error] [server.js: app.post /login]" + err);
+		res.status(401);
+		res.json({
+			"login": "login fail"
+		});
 
-		if(authen === true){	
-			// regenerate the session, which is good practice to help
-			// guard against forms of session fixation
-			//https://expressjs.com/en/resources/middleware/session.html
-			req.session.regenerate(function(err) {
-				if(err) next(err);
+		//TODO
+		console.log("login(): after res.json(), before return;");
+		return;
+	}
 
-				req.session.user = req.body.username;
-
-				// save the session before redirection to ensure page
-	    		// load does not happen before session is saved
-				req.session.save(function(err) {
-					if(err) return next(err);
-					console.log("login: " + req.body.username + " saved to session successfully with req.session.user:" + req.session.user);
-					//TODO: frontend client executes the redirection to the home page /
-
-					console.log("login: " + req.body.username + " successful");
-
-					active_username_set.add(req.body.username);
-					console.log("active username set: " + Array.from(active_username_set) );
-
-					res.status(200);
-					res.json({
-						"login":"success"
-					});
-
-					//TODO: redirect to the chat room page.
-
-					return;
-				});
-			});
-		}else{
-			console.log("login: not found or incorrect!!!");
-			console.log("active username set: " + Array.from(active_username_set) );
-			res.status(401);
-			res.json({
-				"login":"not found or incorrect"
-			});
-			return;
-		}
-	});//db.all()
+	console.log("login(): ok");
+	console.log("req.session.user: " + req.session.user);
+	res.status(200);
+	res.json({
+		"login": "success"
+	});
 });
 
 
 //HTTP POST. logout
-app.post("/logout", (req, res) => {
+app.post("/logout", async (req, res) => {
 	console.log();
-	console.log("server got an HTTP POST /logout request.");
+	console.log("sever POST logout: got a logout (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
-	//if(active_username_set.has(req.body.username) === true){
-	if(req.session.user){
-		console.log("/logout: req.session.user:" + req.session.user);
-		
-		//active_username_set.delete(req.body.username);
-		active_username_set.delete(req.session.user);
-		console.log("active username set: " + Array.from(active_username_set) );
-
-		//https://expressjs.com/en/resources/middleware/session.html
-		delete req.session.user;
-		req.session.save(function(err) {
-			// regenerate the session, which is good practice to help
-		    // guard against forms of session fixation
-			req.session.regenerate(function(err) {
-				if(err) next(err);
-				//TODO: frontend client executes the redirection to the home page /
-				//res.redirect("/");
-
-				console.log("logout: success.");
-
-
-				res.status(200);
-				res.json({
-					"logout":"success"
-				});
-
-				//TODO: redirect to the login page.
-			});
-		});
-	}else{
-		console.log("logout: username not active.");
-		console.log("active username set: " + Array.from(active_username_set) );
-
+	const user = new User(req.body.username, req.body.password);
+	try{
+		await user.logout(req);
+	}catch(err){
+		console.log("[error] [server.js: app.post /logout]" + err);
 		res.status(400);
 		res.json({
-			"logout":"username not active"
+			"logout": "logout fail"
 		});
+
+		//TODO
+		console.log("logout(): after res.json(), before return;");
+		return;
 	}
+
+	console.log("logout(): ok");
+	res.status(200);
+	res.json({
+		"logout": "success"
+	});
 });
 
 
@@ -335,14 +249,9 @@ io.on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
 });
 
-//TODO: socket.io on connection & disconnect events.
-
-
 //node.js http module.
 //https://nodejs.org/api/http.html#serverlisten
 http.listen(port, () => {
 	console.log(`socket.io server running on ${port}`);
 });
 
-
-//TODO: express graceful shutdown: close http server & db.
