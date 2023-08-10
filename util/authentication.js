@@ -3,7 +3,7 @@
 class Authentication{
 	constructor(){}
 	
-	async login(req){
+	static async add_session(req){
 		//NOTE: must save session before returning the http response to be saved in client.
 		//NOTE: and pure callbacks won't wait. so must wrap with Promise.
 		
@@ -25,7 +25,7 @@ class Authentication{
 		});
 	}
 
-	async logout(req){
+	static async delete_session(req){
 		if(this.is_logged_in(req) === false) throw Status_Code.LOGOUT_FAIL;
 
 		return new Promise(function(resolve, reject){	
@@ -49,7 +49,7 @@ class Authentication{
 		});
 	}
 
-	is_logged_in(req){
+	static is_logged_in(req){
 		return Boolean(req.session.username);
 	}
 }

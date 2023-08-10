@@ -21,7 +21,11 @@ const db = new sqlite3.Database("message_db.db");
 
 const User = require("./models/user").User;
 
-const auth = new (require("./models/authentication").Authentication)();
+const login_page_view = require("./views/login_page_view");
+const chat_room_view = require("./views/chat_room_view");
+
+const auth = require("./util/authentication").Authentication;
+
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
 const session = require("express-session");
@@ -64,15 +68,13 @@ active_username_set = new Set();
 //TODO: move to auth class ?
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
-function is_authenticated_redirect(req, res, next){
-	//error: browser: cannot GET /
-	//if(req.session.user) next();
+function is_authenticated_redirect_login(req, res, next){
+	//error: browswer: cannot GET / , since no next router for /
 	if(auth.is_logged_in(req) === true) next();
 	else{
-		console.log("server directs client to /login.html");
-		res.sendFile(__dirname + "/public/login.html");
+		login_page_view.login_page(res);
+
 		return;
-		//error: browswer: cannot GET / , since no next router for /
 	};
 }
 
@@ -83,9 +85,8 @@ function is_authenticated_redirect(req, res, next){
 //https://expressjs.com/en/starter/basic-routing.html
 
 //HTTP GET. a function handler for the home page.
-app.get("/", is_authenticated_redirect, (req, res) => {
-	console.log("server directs client to /chat.html");
-	res.sendFile(__dirname + "/public/chat.html");
+app.get("/", is_authenticated_redirect_login, (req, res) => {
+	chat_room_view.chat_room(res);
 });
 
 
@@ -126,7 +127,7 @@ app.post("/messages", (req, res) => {
 
 //HTTP GET. chats.
 //restrict unlogged-in client to access router /messages for chat logs.
-app.get("/messages", is_authenticated_redirect, (req, res) => {
+app.get("/messages", is_authenticated_redirect_login, (req, res) => {
 	console.log();
 	console.log("server got HTTP GET /messages request.");
 

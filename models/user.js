@@ -2,8 +2,7 @@
 const Status_Code = require("../util/status_code");
 const DB_Promise = require("../util/db_promise");
 
-const Authentication = require("./authentication.js").Authentication;
-const auth = new Authentication();
+const auth = require("../util/authentication.js").Authentication;
 
 class User{
 	constructor(username, password){
@@ -43,7 +42,7 @@ class User{
 
 		try{
 			await this.authenticate(this.username, this.password);
-			await auth.login(req);
+			await auth.add_session(req);
 		}catch(err){
 			console.log("[failed] User.login(): " + err);
 			throw err;
@@ -59,7 +58,7 @@ class User{
 
 		try{
 			await this.authenticate(this.username, this.password);
-			await auth.logout(req);
+			await auth.delete_session(req);
 		}catch(err){
 			console.log("[failed] User.logout(): " + err);
 			throw err;
