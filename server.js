@@ -21,6 +21,7 @@ const db = new sqlite3.Database("message_db.db");
 
 const User = require("./models/user").User;
 
+const auth = new (require("./models/authentication").Authentication)();
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
 const session = require("express-session");
@@ -65,7 +66,8 @@ active_username_set = new Set();
 //https://expressjs.com/en/resources/middleware/session.html
 function is_authenticated(req, res, next){
 	//error: browser: cannot GET /
-	if(req.session.user) next();
+	//if(req.session.user) next();
+	if(auth.is_logged_in(req) === true) next();
 	else{
 		console.log("server directs client to /login.html");
 		res.sendFile(__dirname + "/public/login.html");
@@ -195,6 +197,8 @@ app.post("/login", async (req, res) => {
 		await user.login(req);
 	}catch(err){
 		console.log("[error] [server.js: app.post /login]" + err);
+		console.log("active_username_set: " + Array.from(active_username_set) );
+
 		res.status(401);
 		res.json({
 			"login": "login fail"
@@ -206,6 +210,9 @@ app.post("/login", async (req, res) => {
 
 	console.log("login(): ok");
 	console.log("req.session.user: " + req.session.user);
+	active_username_set.add(req.body.username);
+	console.log("active_username_set: " + Array.from(active_username_set) );
+
 	res.status(200);
 	res.json({
 		"login": "success"
@@ -216,9 +223,9 @@ app.post("/login", async (req, res) => {
 //HTTP POST. logout
 app.post("/logout", async (req, res) => {
 	console.log();
-	console.log("sever POST logout: got a logout (username, password): (" + req.body.username + ", " + req.body.password + ").");
+	console.log("sever POST logout: got a logout (username, password): (" + req.session.user + ", ****).");
 
-	const user = new User(req.body.username, req.body.password);
+	const user = new User(req.session.username, null);
 	try{
 		await user.logout(req);
 	}catch(err){
@@ -233,6 +240,10 @@ app.post("/logout", async (req, res) => {
 	}
 
 	console.log("logout(): ok");
+	//TODO:
+	active_username_set.delete(req.body.username);
+	console.log("active_username_set: " + Array.from(active_username_set) );
+
 	res.status(200);
 	res.json({
 		"logout": "success"
