@@ -64,7 +64,7 @@ active_username_set = new Set();
 //TODO: move to auth class ?
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
-function is_authenticated(req, res, next){
+function is_authenticated_redirect(req, res, next){
 	//error: browser: cannot GET /
 	//if(req.session.user) next();
 	if(auth.is_logged_in(req) === true) next();
@@ -73,7 +73,6 @@ function is_authenticated(req, res, next){
 		res.sendFile(__dirname + "/public/login.html");
 		return;
 		//error: browswer: cannot GET / , since no next router for /
-		//next("route");
 	};
 }
 
@@ -84,7 +83,7 @@ function is_authenticated(req, res, next){
 //https://expressjs.com/en/starter/basic-routing.html
 
 //HTTP GET. a function handler for the home page.
-app.get("/", is_authenticated, (req, res) => {
+app.get("/", is_authenticated_redirect, (req, res) => {
 	console.log("server directs client to /chat.html");
 	res.sendFile(__dirname + "/public/chat.html");
 });
@@ -94,12 +93,12 @@ app.get("/", is_authenticated, (req, res) => {
 app.post("/messages", (req, res) => {
 	console.log();
 	console.log("server got HTTP POST /messages request.");
-	console.log("from req.session.user:" + req.session.user);
+	console.log("from req.session.username:" + req.session.username);
 
 	const timestamp_utc = (new Date()).toUTCString();
 
 	//socket.io emit the event to all clients
-	io.emit("new chat message", req.body.message, timestamp_utc, req.session.user);
+	io.emit("new chat message", req.body.message, timestamp_utc, req.session.username);
 
 
 	//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
@@ -109,7 +108,7 @@ app.post("/messages", (req, res) => {
 
 	//run the SQL query with the param.
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
-	db.run("INSERT INTO messages VALUES(?, ?, ?)", req.body.message, timestamp_utc, req.session.user);
+	db.run("INSERT INTO messages VALUES(?, ?, ?)", req.body.message, timestamp_utc, req.session.username);
 
 	//Sets the HTTP status for the response.
 	//https://expressjs.com/en/api.html#res.status
@@ -127,7 +126,7 @@ app.post("/messages", (req, res) => {
 
 //HTTP GET. chats.
 //restrict unlogged-in client to access router /messages for chat logs.
-app.get("/messages", is_authenticated, (req, res) => {
+app.get("/messages", is_authenticated_redirect, (req, res) => {
 	console.log();
 	console.log("server got HTTP GET /messages request.");
 
@@ -139,12 +138,12 @@ app.get("/messages", is_authenticated, (req, res) => {
 	//https://github.com/TryGhost/node-sqlite3/wiki/API
 	db.all("SELECT * FROM messages", (err, msg_rows) => {
 		for(let msg of msg_rows){
-			console.log(msg);
+			//console.log(msg);
 			msgs.push(msg);
 		}
 
-		console.log("print msgs:");
-		console.log(msgs);
+		//console.log("print msgs:");
+		//console.log(msgs);
 
 		//Sets the HTTP status for the response.
 		//https://expressjs.com/en/api.html#res.status
@@ -204,12 +203,12 @@ app.post("/login", async (req, res) => {
 			"login": "login fail"
 		});
 
-		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
 	console.log("login(): ok");
-	console.log("req.session.user: " + req.session.user);
+	console.log("req.session.username: " + req.session.username);
+	console.log("req.session.password: " + req.session.password);
 	active_username_set.add(req.body.username);
 	console.log("active_username_set: " + Array.from(active_username_set) );
 
@@ -223,9 +222,12 @@ app.post("/login", async (req, res) => {
 //HTTP POST. logout
 app.post("/logout", async (req, res) => {
 	console.log();
-	console.log("sever POST logout: got a logout (username, password): (" + req.session.user + ", ****).");
+	console.log("sever POST logout: got a logout (username, password): (" + req.session.username + ", " + req.session.password + ").");
 
-	const user = new User(req.session.username, null);
+	active_username_set.delete(req.session.username);
+	console.log("active_username_set: " + Array.from(active_username_set) );
+
+	const user = new User(req.session.username, req.session.password);
 	try{
 		await user.logout(req);
 	}catch(err){
@@ -235,14 +237,10 @@ app.post("/logout", async (req, res) => {
 			"logout": "logout fail"
 		});
 
-		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
 	console.log("logout(): ok");
-	//TODO:
-	active_username_set.delete(req.body.username);
-	console.log("active_username_set: " + Array.from(active_username_set) );
 
 	res.status(200);
 	res.json({

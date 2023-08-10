@@ -12,11 +12,12 @@ class Authentication{
 			req.session.regenerate(function(err){
 				if(err) throw err;
 
-				req.session.user = req.body.username;
+				req.session.username = req.body.username;
+				req.session.password = req.body.password;
 
 				req.session.save(function(err){
 					if(err) throw err;
-					console.log(`[models/user.js] Authentication login(): saved to session with req.session.user: ${req.session.user}`);
+					console.log(`[models/user.js] Authentication login(): saved to session with req.session.usernanem .password ${req.session.username} ${req.session.password}`);
 
 					resolve();
 				});
@@ -29,7 +30,9 @@ class Authentication{
 
 		return new Promise(function(resolve, reject){	
 			//https://expressjs.com/en/resources/middleware/session.html
-			delete req.session.user;
+			delete req.session.username;
+			delete req.session.password;
+
 			req.session.save(function(err){
 				if(err) throw err;
 
@@ -47,7 +50,7 @@ class Authentication{
 	}
 
 	is_logged_in(req){
-		return Boolean(req.session.user);
+		return Boolean(req.session.username);
 	}
 }
 
