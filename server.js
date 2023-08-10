@@ -16,7 +16,7 @@ const port = 3000
 
 //MVC Models
 const Chat_Room = require("./models/chat_room").Chat_Room;
-//const public_chat_room = new Chat_Room();
+const public_chat_room = new Chat_Room();
 
 //MVC Views
 const login_page_view = require("./views/login_page_view");
@@ -109,7 +109,7 @@ app.post("/messages", async (req, res) => {
 	console.log("experss POST: server got a new message:" + req.body.message + ", on timestamp_utc:" + timestamp_utc);
 
 	try{
-		//await public_chat_room.save_chat_message(req.body.message, timestamp_utc, req.session.username);
+		await public_chat_room.save_chat_message(req.body.message, timestamp_utc, req.session.username);
 	}catch(err){
 		console.log("[error] [server.js app.post /messages save_chat_message()]: " + err);
 		res.status(500);
@@ -136,7 +136,7 @@ app.get("/messages", is_authenticated_redirect_login, async (req, res) => {
 
 	let msgs;
 	try{
-		//msgs = await public_chat_room.get_all_chat_messages();
+		msgs = await public_chat_room.get_all_chat_messages();
 	}catch(err){
 		console.log("[error] [server.js app.get /messages get_all_chat_messages()]: " + err);
 		res.status(500);
