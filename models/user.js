@@ -24,25 +24,28 @@ class User{
 		console.log("register(): success.");
 	}
 
-	async login(req){
-		console.log("[models/user.js: User.login()].");
-
+	async authenticate(username, password){
 		let account_rows;
 		try{
 			account_rows = await DB_Promise.db_all(`SELECT * FROM accounts WHERE username = \"${ this.username }\" AND password = \"${ this.password }\"`);
 		}catch(err){
-			console.log("[error] login(): " + err);
+			console.log("[error] User.authenticate(): " + err);
 			throw err;
 		}
 
 		if(account_rows.length === 0){
-			throw Status_Code.LOGIN_FAIL;
+			throw Status_Code.AUTHENTICATION_FAIL;
 		}
+	}
+
+	async login(req){
+		console.log("[models/user.js: User.login()].");
 
 		try{
+			await this.authenticate(this.username, this.password);
 			await auth.login(req);
 		}catch(err){
-			console.log("[error] login() auth: " + err);
+			console.log("[failed] User.login(): " + err);
 			throw err;
 		}
 	}
@@ -50,14 +53,15 @@ class User{
 	async logout(req){
 		console.log("[models/user.js: User.logout()].");
 		if(auth.is_logged_in(req) === false){
-			console.log("[error] logout() user not active in session.");
+			console.log("[error] User.logout() username not in session.");
 			throw Status_Code.LOGOUT_FAIL;
 		}
 
 		try{
+			await this.authenticate(this.username, this.password);
 			await auth.logout(req);
 		}catch(err){
-			console.log("[error] logout() auth: " + err);
+			console.log("[failed] User.logout(): " + err);
 			throw err;
 		}
 	}
