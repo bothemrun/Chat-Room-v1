@@ -20,7 +20,7 @@ const login_page_view = require("./views/login_page_view");
 const chat_room_view = require("./views/chat_room_view");
 
 //MVC Controllers
-const user_controller = require("./controllers/user_controller");
+const user_controller = new (require("./controllers/user_controller").User_Controller)();
 const Chat_Room_Controller = require("./controllers/chat_room_controller").Chat_Room_Controller;
 const public_chat_room_controller = new Chat_Room_Controller(io);
 
@@ -62,10 +62,6 @@ app.use(express.static(__dirname + "/public"));
 app.use(express.json());
 
 
-//TODO: move to models.
-//can have duplicate logged-in users.
-active_username_set = new Set();
-
 //TODO: move to auth class ?
 //user login by express-session
 //https://expressjs.com/en/resources/middleware/session.html
@@ -87,6 +83,8 @@ app.get("/", is_authenticated_redirect_login, (req, res) => {
 
 //HTTP POST. chats.
 //app.post("/messages", public_chat_room_controller.save_chat_message);
+//for "this" binding.
+//https://stackoverflow.com/questions/45643005/why-is-this-undefined-in-this-class-method
 app.post("/messages", public_chat_room_controller.save_chat_message.bind(public_chat_room_controller));
 
 //HTTP GET. chats.
@@ -95,13 +93,13 @@ app.get("/messages", is_authenticated_redirect_login, public_chat_room_controlle
 
 
 //HTTP POST. register.
-app.post("/register", user_controller.register);
+app.post("/register", user_controller.register.bind(user_controller));
 
 //HTTP POST. login
-app.post("/login", user_controller.login);
+app.post("/login", user_controller.login.bind(user_controller));
 
 //HTTP POST. logout
-app.post("/logout", user_controller.logout);
+app.post("/logout", user_controller.logout.bind(user_controller));
 
 
 
