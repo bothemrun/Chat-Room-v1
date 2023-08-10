@@ -19,10 +19,13 @@ const port = 3000
 const sqlite3 = require("sqlite3").verbose();
 const db = new sqlite3.Database("message_db.db");
 
-const User = require("./models/user").User;
 
+//MVC Views
 const login_page_view = require("./views/login_page_view");
 const chat_room_view = require("./views/chat_room_view");
+
+//MVC Controllers
+const user_controller = require("./controllers/user_controller");
 
 const auth = require("./util/authentication").Authentication;
 
@@ -162,92 +165,13 @@ app.get("/messages", is_authenticated_redirect_login, (req, res) => {
 
 
 //HTTP POST. register.
-app.post("/register", async (req, res) => {
-	console.log();
-	console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
-
-	const user = new User(req.body.username, req.body.password);
-	try{
-		await user.register();
-	}catch(err){
-		console.log("[error] [server.js: app.post /register]" + err);
-		res.status(400);
-		res.json({
-			"register":"error."
-		});
-	
-		//res.end() res.send() "ending request-response cycle" doesn't return from function.
-		return;
-	}
-
-	res.status(201);
-	res.json({
-		"register":"success"
-	});
-});
-
+app.post("/register", user_controller.register);
 
 //HTTP POST. login
-app.post("/login", async (req, res) => {
-	console.log();
-	console.log("sever POST login: got a login (username, password): (" + req.body.username + ", " + req.body.password + ").");
-
-	const user = new User(req.body.username, req.body.password);
-	try{
-		await user.login(req);
-	}catch(err){
-		console.log("[error] [server.js: app.post /login]" + err);
-		console.log("active_username_set: " + Array.from(active_username_set) );
-
-		res.status(401);
-		res.json({
-			"login": "login fail"
-		});
-
-		return;
-	}
-
-	console.log("login(): ok");
-	console.log("req.session.username: " + req.session.username);
-	console.log("req.session.password: " + req.session.password);
-	active_username_set.add(req.body.username);
-	console.log("active_username_set: " + Array.from(active_username_set) );
-
-	res.status(200);
-	res.json({
-		"login": "success"
-	});
-});
-
+app.post("/login", user_controller.login);
 
 //HTTP POST. logout
-app.post("/logout", async (req, res) => {
-	console.log();
-	console.log("sever POST logout: got a logout (username, password): (" + req.session.username + ", " + req.session.password + ").");
-
-	active_username_set.delete(req.session.username);
-	console.log("active_username_set: " + Array.from(active_username_set) );
-
-	const user = new User(req.session.username, req.session.password);
-	try{
-		await user.logout(req);
-	}catch(err){
-		console.log("[error] [server.js: app.post /logout]" + err);
-		res.status(400);
-		res.json({
-			"logout": "logout fail"
-		});
-
-		return;
-	}
-
-	console.log("logout(): ok");
-
-	res.status(200);
-	res.json({
-		"logout": "success"
-	});
-});
+app.post("/logout", user_controller.logout);
 
 
 
