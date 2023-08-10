@@ -144,6 +144,10 @@ app.get("/messages", is_authenticated, (req, res) => {
 		console.log("print msgs:");
 		console.log(msgs);
 
+		//Sets the HTTP status for the response.
+		//https://expressjs.com/en/api.html#res.status
+		res.status(200);
+
 		//Sends a JSON response. This method sends a response (with the correct Content-Type) that is the parameter converted to a JSON string using JSON.stringify().
 		//The parameter can be any JSON type, including object, array, string, Boolean, number, or null, and you can also use it to convert other values to JSON.
 		//https://expressjs.com/en/4x/api.html#res.json
@@ -152,10 +156,6 @@ app.get("/messages", is_authenticated, (req, res) => {
 		});
 	});
 
-	//TODO: should res.status() before res.json() ?
-	//Sets the HTTP status for the response.
-	//https://expressjs.com/en/api.html#res.status
-	res.status(200);
 });
 
 
@@ -173,9 +173,8 @@ app.post("/register", async (req, res) => {
 		res.json({
 			"register":"error."
 		});
-		
-		//TODO: NOTE: must return. or will go the next lines outside the catch block.
-		console.log("register(): after res.json(), before return;");
+	
+		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
@@ -201,8 +200,7 @@ app.post("/login", async (req, res) => {
 			"login": "login fail"
 		});
 
-		//TODO
-		console.log("login(): after res.json(), before return;");
+		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
@@ -230,8 +228,7 @@ app.post("/logout", async (req, res) => {
 			"logout": "logout fail"
 		});
 
-		//TODO
-		console.log("logout(): after res.json(), before return;");
+		//res.end() res.send() "ending request-response cycle" doesn't return from function.
 		return;
 	}
 
