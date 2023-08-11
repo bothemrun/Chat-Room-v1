@@ -1,4 +1,6 @@
 //express-session authentication
+//MVC Views
+const login_page_view = require("../views/login_page_view");
 
 class Authentication{
 	constructor(){}
@@ -51,6 +53,18 @@ class Authentication{
 
 	static is_logged_in(req){
 		return Boolean(req.session.username);
+	}
+
+	//user login by express-session
+	//https://expressjs.com/en/resources/middleware/session.html
+	static is_authenticated_redirect_login(req, res, next){
+		//error: browswer: cannot GET / , since no next router for /
+		if(this.is_logged_in(req) === true) next();
+		else{
+			login_page_view.login_page(res);
+
+			return;
+		};
 	}
 }
 
