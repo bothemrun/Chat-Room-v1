@@ -14,15 +14,13 @@ const http = require("http").Server(app);
 const io = require("socket.io")(http);
 const port = 3000
 
+//router-level middleware
+const user_router = require("./routes/user").router;
+const Chat_Room_Router = require("./routes/chat_room").Chat_Room_Router;
+const chat_room_router = new Chat_Room_Router(io);
 
 //MVC Views
-const login_page_view = require("./views/login_page_view");
 const chat_room_view = require("./views/chat_room_view");
-
-//MVC Controllers
-const user_controller = new (require("./controllers/user_controller").User_Controller)();
-const Chat_Room_Controller = require("./controllers/chat_room_controller").Chat_Room_Controller;
-const public_chat_room_controller = new Chat_Room_Controller(io);
 
 
 const auth = require("./util/authentication").Authentication;
@@ -31,12 +29,19 @@ const auth = require("./util/authentication").Authentication;
 //https://expressjs.com/en/resources/middleware/session.html
 const session = require("express-session");
 
+//root-level middleware logger
+app.use((req, res, next) => {
+	console.log("*******************http request********************");
+
+	//NOTE: crucial: hangs without it.
+	next();
+});
+
 app.use(session({
 	secret: "https://expressjs.com/en/resources/middleware/session.html",
 	resave: false,
 	saveUninitialized: true
 }));
-
 
 //https://stackoverflow.com/questions/28362909/how-do-i-restrict-the-user-from-accessing-the-static-html-files-in-a-expressjs-n
 app.use((req, res, next) => {
@@ -61,46 +66,14 @@ app.use(express.static(__dirname + "/public"));
 //https://expressjs.com/en/api.html#express.json
 app.use(express.json());
 
-
-//TODO: move to auth class ?
-//user login by express-session
-//https://expressjs.com/en/resources/middleware/session.html
-function is_authenticated_redirect_login(req, res, next){
-	//error: browswer: cannot GET / , since no next router for /
-	if(auth.is_logged_in(req) === true) next();
-	else{
-		login_page_view.login_page(res);
-
-		return;
-	};
-}
-
+//TODO: homepage routes
 //HTTP GET. a function handler for the home page.
-app.get("/", is_authenticated_redirect_login, (req, res) => {
+app.get("/", auth.is_authenticated_redirect_login.bind(auth), (req, res) => {
 	chat_room_view.chat_room(res);
 });
 
-
-//HTTP POST. chats.
-//app.post("/messages", public_chat_room_controller.save_chat_message);
-//for "this" binding.
-//https://stackoverflow.com/questions/45643005/why-is-this-undefined-in-this-class-method
-app.post("/messages", public_chat_room_controller.save_chat_message.bind(public_chat_room_controller));
-
-//HTTP GET. chats.
-//restrict unlogged-in client to access router /messages for chat logs.
-app.get("/messages", is_authenticated_redirect_login, public_chat_room_controller.get_all_chat_messages);
-
-
-//HTTP POST. register.
-app.post("/register", user_controller.register.bind(user_controller));
-
-//HTTP POST. login
-app.post("/login", user_controller.login.bind(user_controller));
-
-//HTTP POST. logout
-app.post("/logout", user_controller.logout.bind(user_controller));
-
+app.use(user_router);
+app.use(chat_room_router.router);
 
 
 io.on("connection", (socket) => {
