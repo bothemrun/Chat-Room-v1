@@ -4,7 +4,7 @@ const User = require("../models/user").User;
 
 class User_Controller{
 	constructor(){
-		this.active_username_set = new Set();
+		this.active_username_map = new Map();
 	}
 
 	async register(req, res){
@@ -40,7 +40,7 @@ class User_Controller{
 			await user.login(req);
 		}catch(err){
 			console.log("[error] [server.js: app.post /login]" + err);
-			console.log("active_username_set: " + Array.from(this.active_username_set) );
+			console.log("active_username_map: " + Array.from(this.active_username_map) );
 
 			res.status(401);
 			res.json({
@@ -53,8 +53,10 @@ class User_Controller{
 		console.log("login(): ok");
 		console.log("req.session.username: " + req.session.username);
 		console.log("req.session.password: " + req.session.password);
-		this.active_username_set.add(req.body.username);
-		console.log("active_username_set: " + Array.from(this.active_username_set) );
+
+		let login_cnt = this.active_username_map.get(req.body.username);
+		this.active_username_map.set(req.body.username, (login_cnt)? (login_cnt+1):1 );
+		console.log("active_username_map: " + Array.from(this.active_username_map) );
 
 		res.status(200);
 		res.json({
@@ -66,8 +68,19 @@ class User_Controller{
 		console.log();
 		console.log("sever POST logout: got a logout (username, password): (" + req.session.username + ", " + req.session.password + ").");
 
-		this.active_username_set.delete(req.session.username);
-		console.log("active_username_set: " + Array.from(this.active_username_set) );
+		try{
+			let login_cnt = this.active_username_map.get(req.session.username);
+			if(this.active_username_map.has(req.session.username) === false || login_cnt <= 0)
+				throw "active_username_map logout wrong.";
+
+			login_cnt = login_cnt - 1;
+			this.active_username_map.set(req.session.username, login_cnt);
+			if(login_cnt === 0) this.active_username_map.delete(req.session.username);
+		}catch(err){
+			console.log("[error] [server.js: app.post /logout active_username_map]" + err);
+			throw err;
+		}
+		console.log("active_username_map: " + Array.from(this.active_username_map) );
 
 		const user = new User(req.session.username, req.session.password);
 		try{
