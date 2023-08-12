@@ -68,7 +68,8 @@ app.use(express.json());
 
 //TODO: homepage routes
 //HTTP GET. a function handler for the home page.
-app.get("/", auth.is_authenticated_redirect_login.bind(auth), (req, res) => {
+//app.get("/", auth.is_authenticated_redirect_login.bind(auth), (req, res) => {
+app.get("/", (...args) => auth.is_authenticated_redirect_login(...args), (req, res) => {
 	chat_room_view.chat_room(res);
 });
 
