@@ -22,8 +22,6 @@ function register(){
 
 	console.log("client registers with username:" + input_username.value + ", password:" + input_password.value);
 	if(input_username.value && input_password.value){
-		//TODO: valid username password validation.
-
 		//ajax to call RESTful API by an XMLHttpRequest object
 		const xhttp = new XMLHttpRequest();
 
@@ -37,7 +35,7 @@ function register(){
 			}
 		};
 
-		xhttp.open("POST", "/register");
+		xhttp.open("POST", "/users", false);
 
 		xhttp.setRequestHeader("Content-Type", "application/json");
 
@@ -74,7 +72,7 @@ function login(){
 			}else redirect_home();
 		};
 
-		xhttp.open("POST", "/login");
+		xhttp.open("POST", "/logins", false);
 
 		xhttp.setRequestHeader("Content-Type", "application/json");
 
@@ -104,12 +102,10 @@ function logout(){
 		}else redirect_home();
 	};
 
-	xhttp.open("POST", "/logout");
+	//xhttp.open("POST", "/logins");
+	xhttp.open("DELETE", "/logins");
 
 	xhttp.setRequestHeader("Content-Type", "application/json");
 
-	xhttp.send(JSON.stringify({
-		"username":"lougout TODO",
-		"password":"logout TODO"
-	}));
+	xhttp.send();
 }
