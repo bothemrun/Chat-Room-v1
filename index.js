@@ -1,24 +1,7 @@
 const express = require("express");
-
-//top-level Express function / an Express server instance.
-//initialize a function handler supplied to an HTTP server.
-const app = require("express")();
-
-//node.js http module's Server class.
-//specify the requestListener function.
-//https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
-const http = require("http").Server(app);
-
-//initialize a new instance of socket.io by the HTTP server object.
-//https://socket.io/get-started/chat
-const io = require("socket.io")(http);
-
-const get_socket_io_instance_fn = function get_socket_io_instance(){
-	return io;
-};
-module.exports.get_socket_io_instance_fn = get_socket_io_instance_fn;
-
-const port = 3000
+const network = require("./server/network");
+const app = network.app;
+const io = network.get_socket_io_instance_fn();
 
 //router-level middleware
 const user_router = require("./routes/user").router;
@@ -35,6 +18,12 @@ const auth = require("./util/authentication").Authentication;
 //https://expressjs.com/en/resources/middleware/session.html
 const session = require("express-session");
 
+app.use(session({
+	secret: "https://expressjs.com/en/resources/middleware/session.html",
+	resave: false,
+	saveUninitialized: true
+}));
+
 //root-level middleware logger
 app.use((req, res, next) => {
 	console.log("*******************http request********************");
@@ -42,12 +31,6 @@ app.use((req, res, next) => {
 	//NOTE: crucial: hangs without it.
 	next();
 });
-
-app.use(session({
-	secret: "https://expressjs.com/en/resources/middleware/session.html",
-	resave: false,
-	saveUninitialized: true
-}));
 
 //https://stackoverflow.com/questions/28362909/how-do-i-restrict-the-user-from-accessing-the-static-html-files-in-a-expressjs-n
 app.use((req, res, next) => {
@@ -82,17 +65,3 @@ app.get("/", (...args) => auth.is_authenticated_redirect_login(...args), (req, r
 app.use(user_router);
 app.use(chat_room_router.router);
 
-
-io.on("connection", (socket) => {
-	console.log("socket.io server got a new connection.");
-});
-
-//node.js http module.
-//https://nodejs.org/api/http.html#serverlisten
-http.listen(port, () => {
-	console.log(`socket.io server running on ${port}`);
-});
-
-
-//module.exports = {get_socket_io_instance_fn, hi:"heelo"};
-//module.exports.get_socket_io_instance_fn = get_socket_io_instance_fn;

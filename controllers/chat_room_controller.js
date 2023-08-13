@@ -6,7 +6,7 @@ const public_chat_room = new Chat_Room();
 //Singleton for socket.io instance, instead of dependency injection by class constructor.
 const path = require("path");
 //const server = require("../server");
-const server = require(path.join(__dirname, "..", "server"));
+const server = require(path.join(__dirname, "..", "server", "network"));
 //import {get_socket_io_instance_fn, hi} from "../server"
 console.log("server:"+ JSON.stringify(server) );
 const get_socket_io_instance_fn = server.get_socket_io_instance_fn;
