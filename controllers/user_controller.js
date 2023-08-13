@@ -1,6 +1,6 @@
 //user_controller.js
 //MVC Models
-const User = require("../models/user").User;
+const User_Model = require("../models/user_model").User_Model;
 
 class User_Controller{
 	constructor(){
@@ -11,7 +11,7 @@ class User_Controller{
 		console.log();
 		console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
-		const user = new User(req.body.username, req.body.password);
+		const user = new User_Model(req.body.username, req.body.password);
 		try{
 			await user.register();
 		}catch(err){
@@ -35,7 +35,7 @@ class User_Controller{
 		console.log();
 		console.log("sever POST login: got a login (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
-		const user = new User(req.body.username, req.body.password);
+		const user = new User_Model(req.body.username, req.body.password);
 		try{
 			await user.login(req);
 		}catch(err){
@@ -82,7 +82,7 @@ class User_Controller{
 		}
 		console.log("active_username_map: " + Array.from(this.active_username_map) );
 
-		const user = new User(req.session.username, req.session.password);
+		const user = new User_Model(req.session.username, req.session.password);
 		try{
 			await user.logout(req);
 		}catch(err){

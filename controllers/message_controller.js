@@ -1,17 +1,16 @@
-//MVC: chat room controller
+//MVC: message controller
 //MVC Models
-const Chat_Room = require("../models/chat_room").Chat_Room;
-const public_chat_room = new Chat_Room();
+const Message_Model = require("../models/message_model").Message_Model;
 
 //Singleton for socket.io instance, instead of dependency injection by class constructor.
 const path = require("path");
 const network = require(path.join(__dirname, "..", "server", "network"));
 
-class Chat_Room_Controller{
+class Message_Controller{
 	constructor(){
 	}
 
-	async save_chat_message(req, res){
+	static async save_chat_message(req, res){
 		console.log();
 		console.log("server got HTTP POST /messages request.");
 		console.log("from req.session.username:" + req.session.username);
@@ -28,7 +27,7 @@ class Chat_Room_Controller{
 		console.log("experss POST: server got a new message:" + req.body.message + ", on timestamp_utc:" + timestamp_utc);
 
 		try{
-			await public_chat_room.save_chat_message(req.body.message, timestamp_utc, req.session.username);
+			await Message_Model.save_chat_message(req.body.message, timestamp_utc, req.session.username);
 		}catch(err){
 			console.log("[error] [server.js app.post /messages save_chat_message()]: " + err);
 			res.status(500);
@@ -44,7 +43,7 @@ class Chat_Room_Controller{
 		});
 	}
 
-	async get_all_chat_messages(req, res){
+	static async get_all_chat_messages(req, res){
 		console.log();
 		console.log("server got HTTP GET /messages request.");
 
@@ -52,9 +51,9 @@ class Chat_Room_Controller{
 
 		let msgs;
 		try{
-			msgs = await public_chat_room.get_all_chat_messages();
+			msgs = await Message_Model.get_all_chat_messages();
 		}catch(err){
-			console.log("[error] [server.js app.get /messages get_all_chat_messages()]: " + err);
+			console.log("[error] [/messages message_controller get_all_chat_messages()]: " + err);
 			res.status(500);
 			res.json({
 				"data": "database error."
@@ -69,4 +68,4 @@ class Chat_Room_Controller{
 	}
 }
 
-module.exports = {Chat_Room_Controller};
+module.exports = {Message_Controller};
