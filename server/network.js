@@ -12,16 +12,29 @@ const http = require("http").Server(app);
 
 //initialize a new instance of socket.io by the HTTP server object.
 //https://socket.io/get-started/chat
-const io = require("socket.io")(http);
+const socket_io = require("socket.io");
+//Singleton
+let io = null;
 
-const get_socket_io_instance_fn = function get_socket_io_instance(){
+const get_socket_io_instance = function(){
+	if(io === null){
+		io = socket_io(http);
+	}
+
 	return io;
 };
-module.exports.get_socket_io_instance_fn = get_socket_io_instance_fn;
+
+const get_express_app_instance = function(){
+	if(app === null){
+		app = express();
+	}
+
+	return app;
+};
 
 const port = 3000
 
-io.on("connection", (socket) => {
+get_socket_io_instance().on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
 });
 
@@ -33,4 +46,4 @@ http.listen(port, () => {
 
 //module.exports = {get_socket_io_instance_fn, hi:"heelo"};
 //module.exports.get_socket_io_instance_fn = get_socket_io_instance_fn;
-module.exports.app = app;
+module.exports = {app, get_socket_io_instance, get_express_app_instance};
