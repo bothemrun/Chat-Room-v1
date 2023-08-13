@@ -1,6 +1,6 @@
 //MVC: user model
 const Status_Code = require("../util/status_code");
-const DB_Promise = require("../util/db_promise");
+const DB_Promise = require("../dao/db_promise");
 
 const auth = require("../util/authentication.js").Authentication;
 

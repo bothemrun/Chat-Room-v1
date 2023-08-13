@@ -1,5 +1,5 @@
 //MVC: message model
-const DB_Promise = require("../util/db_promise");
+const DB_Promise = require("../dao/db_promise");
 
 class Message_Model{
 	constructor(){}
