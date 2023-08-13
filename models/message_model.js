@@ -1,10 +1,10 @@
-//MVC: chat room model
+//MVC: message model
 const DB_Promise = require("../util/db_promise");
 
-class Chat_Room{
+class Message_Model{
 	constructor(){}
 
-	async get_all_chat_messages(){
+	static async get_all_chat_messages(){
 		let msgs = [];
 		try{
 			msgs = await DB_Promise.db_all(`SELECT * FROM messages`);
@@ -16,7 +16,7 @@ class Chat_Room{
 		return msgs;
 	}
 
-	async save_chat_message(new_msg, timestamp_utc, username){
+	static async save_chat_message(new_msg, timestamp_utc, username){
 		try{
 			await DB_Promise.db_run(`INSERT INTO messages VALUES (\"${ new_msg }\", \"${ timestamp_utc }\", \"${ username }\")`);
 		}catch(err){
@@ -26,4 +26,4 @@ class Chat_Room{
 	}
 }
 
-module.exports = {Chat_Room};
+module.exports = {Message_Model};

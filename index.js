@@ -1,16 +1,16 @@
 const express = require("express");
 const network = require("./server/network");
 
-//not used import here, but mounts root-level middleware there.
-const root_middleware = require("./routes/root_middleware");
-
 //Singleton for app
 const app = network.get_express_app_instance();
 
+//not used import here, but mounts root-level middleware there.
+const root_middleware = require("./routers/root_middleware");
+
 //router-level middleware
-const user_router = require("./routes/user").router;
+const user_router = require("./routers/user_router").router;
 //used Singleton for passing socket.io io instance.
-const chat_room_router = require("./routes/chat_room").router;
+const message_router = require("./routers/message_router").router;
 
 //MVC Views
 const chat_room_view = require("./views/chat_room_view");
@@ -25,5 +25,5 @@ app.get("/", (...args) => auth.is_authenticated_redirect_login(...args), (req, r
 });
 
 app.use(user_router);
-app.use(chat_room_router);
+app.use(message_router);
 
