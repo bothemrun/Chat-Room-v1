@@ -5,14 +5,7 @@ const public_chat_room = new Chat_Room();
 
 //Singleton for socket.io instance, instead of dependency injection by class constructor.
 const path = require("path");
-//const server = require("../server");
-const server = require(path.join(__dirname, "..", "server", "network"));
-//import {get_socket_io_instance_fn, hi} from "../server"
-console.log("server:"+ JSON.stringify(server) );
-const get_socket_io_instance_fn = server.get_socket_io_instance_fn;
-console.log(get_socket_io_instance_fn);
-console.log(typeof get_socket_io_instance_fn);
-const socket_io = get_socket_io_instance_fn();
+const network = require(path.join(__dirname, "..", "server", "network"));
 
 class Chat_Room_Controller{
 	constructor(){
@@ -26,7 +19,7 @@ class Chat_Room_Controller{
 		const timestamp_utc = (new Date()).toUTCString();
 
 		//socket.io emit the event to all clients
-		socket_io.emit("new chat message", req.body.message, timestamp_utc, req.session.username);
+		network.get_socket_io_instance().emit("new chat message", req.body.message, timestamp_utc, req.session.username);
 
 
 		//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()
