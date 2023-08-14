@@ -2,7 +2,7 @@
 //TODO: sqlite3 doesn't support Promise, can't use await. maybe use sqlite?
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
-const db = new sqlite3.Database(path.join(__dirname, "..", "models", "sqlite3_db.db"));
+const db = new sqlite3.Database(path.join(__dirname, "..", "dao", "sqlite3_db.db"));
 
 async function db_all(query){
 	return new Promise(function(resolve, reject){

@@ -11,7 +11,7 @@ CREATE TABLE rooms (
 );
 
 CREATE TABLE users2rooms (
-	username varchar(255), NOT NULL
+	username varchar(255) NOT NULL,
 	room_id varchar(2048) NOT NULL
 );
 

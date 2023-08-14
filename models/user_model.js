@@ -16,23 +16,23 @@ class User_Model{
 		try{
 			await DB_Promise.db_run(`INSERT INTO users VALUES(\"${ this.username }\", \"${ this.password }\")`);
 		}catch(err){
-			console.log("[error] register(): " + err);
-			throw err;
+			console.log("[error] register(): " + err + Status_Code.USERNAME_CONFLICT);
+			throw err + Status_Code.USERNAME_CONFLICT;
 		}
 
 		console.log("register(): success.");
 	}
 
 	async authenticate(username, password){
-		let account_rows;
+		let user_rows = undefined;
 		try{
-			account_rows = await DB_Promise.db_all(`SELECT * FROM users WHERE username = \"${ this.username }\" AND password = \"${ this.password }\"`);
+			user_rows = await DB_Promise.db_all(`SELECT * FROM users WHERE username = \"${ this.username }\" AND password = \"${ this.password }\"`);
 		}catch(err){
 			console.log("[error] User.authenticate(): " + err);
 			throw err;
 		}
 
-		if(account_rows.length === 0){
+		if(user_rows.length === 0){
 			throw Status_Code.AUTHENTICATION_FAIL;
 		}
 	}
@@ -63,6 +63,18 @@ class User_Model{
 			console.log("[failed] User.logout(): " + err);
 			throw err;
 		}
+	}
+
+	static async username_exist(username){
+		let user_rows = undefined;
+		try{
+			user_rows = await DB_Promise.db_all(`SELECT * FROM users WHERE username = \"${ username }\"`);
+		}catch(err){
+			console.log("[error] User.username_exist(): " + err);
+			throw err;
+		}
+
+		return user_rows.length !== 0;
 	}
 }
 
