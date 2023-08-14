@@ -1,6 +1,7 @@
 //user_controller.js
 //MVC Models
 const User_Model = require("../models/user_model").User_Model;
+const {Room_Model, public_room_id} = require("../models/room_model");
 
 class User_Controller{
 	constructor(){
@@ -14,8 +15,10 @@ class User_Controller{
 		const user = new User_Model(req.body.username, req.body.password);
 		try{
 			await user.register();
+			//NOTE: remove user_model & room_model module cycle dependency
+			await Room_Model.join_room_by_username_room_id(req.body.username, public_room_id);
 		}catch(err){
-			console.log("[error] [server.js: app.post /register]" + err);
+			console.log("[error] [User_Controller.register()]" + err);
 			res.status(400);
 			res.json({
 				"register":"error."
@@ -39,7 +42,7 @@ class User_Controller{
 		try{
 			await user.login(req);
 		}catch(err){
-			console.log("[error] [server.js: app.post /login]" + err);
+			console.log("[error] [User_Controller.login()]" + err);
 			console.log("active_username_map: " + Array.from(this.active_username_map) );
 
 			res.status(401);
@@ -77,7 +80,7 @@ class User_Controller{
 			this.active_username_map.set(req.session.username, login_cnt);
 			if(login_cnt === 0) this.active_username_map.delete(req.session.username);
 		}catch(err){
-			console.log("[error] [server.js: app.post /logout active_username_map]" + err);
+			console.log("[error] [User_Controller.logout() active_username_map]" + err);
 			throw err;
 		}
 		console.log("active_username_map: " + Array.from(this.active_username_map) );

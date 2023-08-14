@@ -2,31 +2,10 @@
 const Status_Code = require("../util/status_code");
 const DB_Promise = require("../dao/db_promise");
 
-//TODO
-async function username_exist(username){
-	let user_rows = undefined;
-	try{
-		user_rows = await DB_Promise.db_all(`SELECT * FROM users WHERE username = \"${ username }\"`);
-	}catch(err){
-		console.log("[error] User_Model.username_exist(): " + err);
-		throw err;
-	}
-
-	return user_rows.length !== 0;
-}
-module.exports.username_exist = username_exist;
-
-
-const Room_Model = require("../models/room_model");
-//TODO:
-console.log(Room_Model);
-const join_room_by_username_room_id = require("../models/room_model").join_room_by_username_room_id;
-console.log(join_room_by_username_room_id);
-
 const auth = require("../util/authentication.js").Authentication;
 
 
-module.exports.User_Model = class User_Model{
+class User_Model{
 	constructor(username, password){
 		this.username = username;
 		this.password = password;
@@ -42,14 +21,8 @@ module.exports.User_Model = class User_Model{
 			throw err + Status_Code.USERNAME_CONFLICT;
 		}
 
-		try{
-			//TODO: await Room_Model.Room_Model.join_room_by_username_room_id(this.username, Room_Model.public_room_id);
-			//TODO
-			await join_room_by_username_room_id(this.username, Room_Model.public_room_id);
-		}catch(err){
-			console.log("[error] register(): " + err + " " + Status_Code.USER_JOIN_ROOM_FAIL);
-			throw Status_Code.USER_JOIN_ROOM_FAIL;
-		}
+		//no module dependency cycle
+		//await Room_Model.Room_Model.join_room_by_username_room_id(this.username, Room_Model.public_room_id);
 
 		console.log("register(): success.");
 	}
@@ -69,7 +42,7 @@ module.exports.User_Model = class User_Model{
 	}
 
 	async login(req){
-		console.log("[models/user.js: User_Model.login()].");
+		console.log("[User_Model.login()].");
 
 		try{
 			await this.authenticate(this.username, this.password);
@@ -96,7 +69,6 @@ module.exports.User_Model = class User_Model{
 		}
 	}
 
-	/*
 	static async username_exist(username){
 		let user_rows = undefined;
 		try{
@@ -108,7 +80,6 @@ module.exports.User_Model = class User_Model{
 
 		return user_rows.length !== 0;
 	}
-	*/
-};
+}
 
-//module.exports = {User_Model};
+module.exports = {User_Model};
