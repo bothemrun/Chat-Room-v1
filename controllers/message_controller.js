@@ -5,6 +5,7 @@ const Message_Model = require("../models/message_model").Message_Model;
 //Singleton for socket.io instance, instead of dependency injection by class constructor.
 const path = require("path");
 const network = require(path.join(__dirname, "..", "server", "network"));
+const Room_Model = require("../models/room_model");
 
 class Message_Controller{
 	constructor(){
@@ -26,8 +27,11 @@ class Message_Controller{
 		console.log(req.body);
 		console.log("experss POST: server got a new message:" + req.body.message + ", on timestamp_utc:" + timestamp_utc);
 
+		//TODO: all to public room
+		const room_id = Room_Model.public_room_id;
+
 		try{
-			await Message_Model.save_chat_message(req.body.message, timestamp_utc, req.session.username);
+			await Message_Model.save_chat_message(req.body.message, timestamp_utc, req.session.username, room_id);
 		}catch(err){
 			console.log("[error] [server.js app.post /messages save_chat_message()]: " + err);
 			res.status(500);
