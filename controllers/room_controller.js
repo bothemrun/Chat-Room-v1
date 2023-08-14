@@ -14,7 +14,7 @@ class Room_Controller{
 			console.log("[error] /rooms room_controller get_all_rooms_by_username(): " + err);
 			res.status(500);
 			res.json({
-				"rooms": "database error."
+				"rooms": "database error: " + err
 			});
 			return;
 		}
@@ -32,10 +32,10 @@ class Room_Controller{
 		try{
 			await Room_Model.create_room_by_username_array(req.body.username_array)
 		}catch(err){
-			console.log("[error] /rooms room_controlle create_room_by_username_array(): " + err);
+			console.log("[error] /rooms room_controller create_room_by_username_array(): " + err);
 			res.status(500);
 			res.json({
-				"rooms": "database error."
+				"rooms": "database error: " + err
 			});
 			return;
 		}
