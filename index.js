@@ -11,6 +11,7 @@ const root_middleware = require("./routers/root_middleware");
 const user_router = require("./routers/user_router").router;
 //used Singleton for passing socket.io io instance.
 const message_router = require("./routers/message_router").router;
+const room_router = require("./routers/room_router").router;
 
 //MVC Views
 const chat_room_view = require("./views/chat_room_view");
@@ -26,4 +27,4 @@ app.get("/", (...args) => auth.is_authenticated_redirect_login(...args), (req, r
 
 app.use(user_router);
 app.use(message_router);
-
+app.use(room_router);
