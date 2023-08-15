@@ -17,7 +17,7 @@ class Room_Model{
 			throw Status_Code.USERNAME_NOT_EXIST;
 		}
 
-		let rooms = [];
+		let rooms = undefined;
 		try{
 			rooms = await DB_Promise.db_all(`SELECT room_id FROM users2rooms WHERE username = \"${ username }\"`);
 		}catch(err){

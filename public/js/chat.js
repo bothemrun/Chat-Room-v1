@@ -1,7 +1,9 @@
 //load the socket.io-client, which exposes an io global (and the endpoint GET /socket.io/socket.io.js), and then connect.
 //https://socket.io/get-started/chat
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
+
 const socket = io();
+const room_id = "public_room";//TODO
 
 function create_div(class_, id, textContent){
 	const div = document.createElement("div");
@@ -57,8 +59,9 @@ function append_new_chat_log(new_msg, timestamp_utc, username){
 };
 
 //when the user enters the chat room, it gets all old chat logs.
-function enter_room_get_all_chat_logs(){
+async function enter_room_get_all_chat_logs(){
 	console.log("client enters the chat room and gets all old chat logs.");
+
 
 	//use ajax to call RESTful API
 	//send HTTP method(GET POST) requests to server.
@@ -88,7 +91,8 @@ function enter_room_get_all_chat_logs(){
 	};
 
 	//HTTP GET
-	xhttp.open("GET", "/messages");
+	//xhttp.open("GET", "/messages");//TODO:
+	xhttp.open("GET", "/messages/" + room_id);
 
 	//specify http message body's Content-Type in header.
 	/*
@@ -145,7 +149,8 @@ function call_send_message_api(){
 		};
 
 		//HTTP POST
-		xhttp.open("POST", "/messages");
+		//xhttp.open("POST", "/messages");//TODO
+		xhttp.open("POST", "/messages/" + room_id);
 
 		//specify http message body's Content-Type in header.
 		/*
@@ -171,6 +176,12 @@ function call_send_message_api(){
 		input.value = "";
 	}
 };
+
+//TODO
+socket.on("connect", () => {
+	console.log("connect ok. now set room_id.");
+	socket.emit("set room_id", room_id);
+});
 
 //when 1 of the clients send a new chat message,
 //socket.io broadcasting received from server.
