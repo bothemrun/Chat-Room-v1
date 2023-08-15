@@ -36,6 +36,27 @@ const port = 3000
 
 get_socket_io_instance().on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
+
+	//TODO
+	//get_socket_io_instance().on("ci", (socket) => {
+	socket.on("ci socket", () => {
+		console.log("socket.io server got a \"ci socket\" event, socket:");
+		console.log(socket);
+
+		console.log("query key:" + socket.handshake.query.my_query_key);
+		//console.log("data key:" + socket.data.my_data_key);
+	});
+
+	//TODO:
+	socket.on("set room_id", (client_room_id) => {
+		console.log("socket.io server got a \"set room_id\" event, with client_room_id:" + client_room_id);
+	});
+});
+//TODO: can't get emit events from clients, since client doesn't have to socket.io server io instance.
+//note that server side's server instance & socket instance, and client side's socket instance are all distinct.
+get_socket_io_instance().on("ci server", (socket) => {
+	console.log("socket.io server got a \"ci server\" event, socket:");
+	console.log(socket);
 });
 
 //node.js http module.

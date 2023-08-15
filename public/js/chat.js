@@ -1,7 +1,16 @@
 //load the socket.io-client, which exposes an io global (and the endpoint GET /socket.io/socket.io.js), and then connect.
 //https://socket.io/get-started/chat
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
-const socket = io();
+//TODO: const socket = io();
+//TODO
+console.log(window.location.href);
+const socket = io(window.location.href, {
+	query: { "my_query_key": "my_query_val" },
+	//data: { "my_data_key": "my_data_val" },
+});
+console.log(socket);
+//socket.data.my_data_key = "my_data_val";
+//socket.my_data = "my_data_val";
 
 function create_div(class_, id, textContent){
 	const div = document.createElement("div");
@@ -85,6 +94,9 @@ function enter_room_get_all_chat_logs(){
 
 			append_new_chat_log(msg.message, msg.timestamp_utc, msg.username);
 		}
+
+		console.log("in onload");//TODO
+		console.log(socket);
 	};
 
 	//HTTP GET
@@ -104,8 +116,16 @@ function enter_room_get_all_chat_logs(){
 	xhttp.send();
 };
 
-enter_room_get_all_chat_logs();
+console.log("before socket.emit(\"ci\")");
+console.log(socket);//TODO
+socket.emit("ci socket");//TODO
+socket.emit("ci server");//TODO
+console.log("before enter_room_get_all_chat_logs()");
+console.log(socket);//TODO
 
+enter_room_get_all_chat_logs();
+console.log("after enter_room_get_all_chat_logs()");
+console.log(socket);//TODO
 
 /*form.addEventListener("submit", function(event){
 	event.preventDefault();//TODO
@@ -124,6 +144,9 @@ enter_room_get_all_chat_logs();
 function call_send_message_api(){
 	const input = document.getElementById("input_chat");
 	console.log("user input:" + input.value);
+
+	console.log(socket);
+	//socket.emit("ci");//TODO
 
 	if(input.value){
 		console.log("user input in if:" + input.value);
@@ -171,6 +194,12 @@ function call_send_message_api(){
 		input.value = "";
 	}
 };
+
+//TODO
+const room_id = "public_room";
+socket.on("connect", () => {
+	socket.emit("set room_id", room_id);
+});
 
 //when 1 of the clients send a new chat message,
 //socket.io broadcasting received from server.
