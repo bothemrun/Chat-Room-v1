@@ -22,15 +22,15 @@ class Message_Controller{
 			console.log("[error] Message_Controller.save_chat_message(): " + Status_Code.ROOM_NOT_EXIST);
 			throw Status_Code.ROOM_NOT_EXIST;
 		}
-		console.log("server got HTTP POST request /messages/:" + req.params.room_id);
+		console.log("server got HTTP POST request /messages/" + req.params.room_id);
 
 		console.log("from req.session.username:" + req.session.username);
 
 		const timestamp_utc = (new Date()).toUTCString();
 
 		//socket.io emit the event to clients
-		network.get_socket_io_instance().emit("new chat message", req.body.message, timestamp_utc, req.session.username);
-		//TODO: network.get_socket_io_instance().to(room_id).emit("new chat message", req.body.message, timestamp_utc, req.session.username);
+		//TODO: network.get_socket_io_instance().emit("new chat message", req.body.message, timestamp_utc, req.session.username);
+		network.get_socket_io_instance().to(room_id).emit("new chat message", req.body.message, timestamp_utc, req.session.username);
 
 
 		//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()

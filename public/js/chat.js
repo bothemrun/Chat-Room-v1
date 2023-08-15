@@ -3,7 +3,17 @@
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
 
 const socket = io();
-const room_id = "public_room";//TODO
+let room_id = "public_room";//TODO
+//TODO: tmp: set room_id here for testing
+function set_room_id_var(){
+	const input = document.getElementById("input_room_id");
+	console.log("sets room_id to:" + input.value);
+	room_id = input.value;
+	enter_room_get_all_chat_logs();
+	input.value = "";
+}
+
+console.log("does the page reloads and resets global var?" + room_id);
 
 function create_div(class_, id, textContent){
 	const div = document.createElement("div");
@@ -58,10 +68,26 @@ function append_new_chat_log(new_msg, timestamp_utc, username){
 	window.scrollTo(0, document.body.scrollHeight);
 };
 
+//TODO
+function update_info(){
+	const info_div = document.getElementById("info_div");
+	info_div.innerHTML = room_id;
+}
+
+function enter_new_room_remove_all_old_chat_log(){
+	const chat_logs = document.getElementById("chat_logs");
+	chat_logs.innerHTML = "";
+}
+
 //when the user enters the chat room, it gets all old chat logs.
 async function enter_room_get_all_chat_logs(){
-	console.log("client enters the chat room and gets all old chat logs.");
+	console.log(`client enters the chat room_id:${room_id}, and gets all old chat logs.`);
 
+	console.log("emit room_id");//TODO
+	socket.emit("set room_id", room_id);
+
+	//TODO: clear previous room's message logs on html.
+	enter_new_room_remove_all_old_chat_log();
 
 	//use ajax to call RESTful API
 	//send HTTP method(GET POST) requests to server.
@@ -75,24 +101,27 @@ async function enter_room_get_all_chat_logs(){
 
 		//`this` is a XMLHttpRequest object.
 		//its property includes: responseText, status, statusText, onload callback function
-		console.log(". with responseText: " + this.responseText);
+		//console.log(". with responseText: " + this.responseText);
 
 		console.log("Now all chat logs:");
 		//JSON string to Javascript object
 		//https://www.digitalocean.com/community/tutorials/js-json-parse-stringify
 		for(let msg of JSON.parse( this.responseText ).data ){
 			console.log(msg);
-			console.log(msg.message);
-			console.log("timestamp utc: " + msg.timestamp_utc);
-			console.log("username: " + msg.usename);
+			//console.log(msg.message);
+			//console.log("timestamp utc: " + msg.timestamp_utc);
+			//console.log("username: " + msg.usename);
 
 			append_new_chat_log(msg.message, msg.timestamp_utc, msg.username);
 		}
+
+		update_info();//TODO
 	};
 
 	//HTTP GET
 	//xhttp.open("GET", "/messages");//TODO:
-	xhttp.open("GET", "/messages/" + room_id);
+	const encodeURI_room_id = encodeURIComponent(room_id);
+	xhttp.open("GET", "/messages/" + encodeURI_room_id);
 
 	//specify http message body's Content-Type in header.
 	/*
@@ -150,7 +179,8 @@ function call_send_message_api(){
 
 		//HTTP POST
 		//xhttp.open("POST", "/messages");//TODO
-		xhttp.open("POST", "/messages/" + room_id);
+		const encodeURI_room_id = encodeURIComponent(room_id);
+		xhttp.open("POST", "/messages/" + encodeURI_room_id);
 
 		//specify http message body's Content-Type in header.
 		/*
@@ -178,10 +208,12 @@ function call_send_message_api(){
 };
 
 //TODO
+/*
 socket.on("connect", () => {
 	console.log("connect ok. now set room_id.");
 	socket.emit("set room_id", room_id);
 });
+*/
 
 //when 1 of the clients send a new chat message,
 //socket.io broadcasting received from server.

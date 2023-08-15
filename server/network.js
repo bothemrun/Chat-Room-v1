@@ -34,16 +34,51 @@ const get_express_app_instance = function(){
 
 const port = 3000
 
+//socket.io middleware
+//TODO: https://socket.io/docs/v4/middlewares/#compatibility-with-express-middleware
+/*
+get_socket_io_instance().use((socket, next) => {
+	console.log("*************socket.io server event****************");
+
+	next();
+});
+*/
+get_socket_io_instance().engine.use((req, res, next) => {
+	console.log("*************socket.io server event****************");
+
+	next();
+});
+
+
+const socket_id2room_id = new Map();
 get_socket_io_instance().on("connection", (socket) => {
 	console.log("socket.io server got a new \"connection\" event.");
 
 	//NOTE: client's socket instance is not server's socket.io io server/socket instances.
 	//NOTE: client may not have server's socket.io io server instance,
 	//NOTE: so io.on(...) outside of this connection event may not work.
-	socket.on("set room_id", (room_id) => {
+	socket.on("set room_id", async (room_id) => {
 		console.log("socket.io server got a \"set room_id\" event, with room_id=" + room_id);
-		socket.join(room_id);
+
+		for(const [key, val] of socket_id2room_id.entries()){
+			await socket.leave(val);
+			socket_id2room_id.delete(key);
+		}
+		
+		await socket.join(room_id);
+		socket_id2room_id.set(socket.id, room_id);
+		console.log( [...socket_id2room_id.entries()] );
 		console.log(socket.rooms);
+
+		if(socket.rooms.size !== 2){
+			console.log();
+			console.log("!!!!!!!!!!!!!!!!!!");
+			console.log("!!!!!!!!!!!!!!!!!!");
+			console.log("[error] [server/netwwork.js: socket.on(set room_id)]: socket.rooms.size !== 2");
+			console.log();
+
+			throw "[error] [server/netwwork.js: socket.on(set room_id)]: socket.rooms.size !== 2";
+		}
 	});
 });
 

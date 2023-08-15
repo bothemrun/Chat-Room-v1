@@ -16,6 +16,11 @@
 			$(document).ready(function(){
 				$("#send_chat_button").on("click", call_send_message_api);
 			});
+
+			//TODO tmp: set room_id here for testing
+			$(document).ready(function(){
+				$("#set_room_id").on("click", set_room_id_var);
+			});
 		</script>
 	</head>
 
@@ -23,6 +28,14 @@
 		<!-- <h1>Chat Room v1. Chat Room.</h1> -->
 		<div class="navbar">
 			<div id="title">Chat Room v1</div>
+
+			<!-- //TODO tmp: set room_id here for testing -->
+			<!--
+			<textarea id="input_room_id" rows="4" cols="4"></textarea>
+			<div id="set_room_id_div">
+				<button id="set_room_id">Set room_id</button>
+			</div>
+			-->
 
 			<!-- <button id="logout" onclick="logout()">Logout</button> -->
 			<div id="logout_div">
@@ -33,6 +46,15 @@
 
 		<!-- prevent the navigation bar to block the topmost chat post. -->
 		<div><br><br><br></div>
+
+		<div id="info_div">
+		</div>
+
+		<!-- //TODO tmp: set room_id here for testing -->
+		<textarea id="input_room_id" rows="2" cols="4"></textarea>
+		<div id="set_room_id_div">
+			<button id="set_room_id">Set room_id</button>
+		</div>
 
 		<!--logout() in login.js not included & not defined.-->
 		<!-- <button onclick="logout()">Log out</button> -->
