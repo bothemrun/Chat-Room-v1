@@ -10,12 +10,12 @@ const app = express();
 //https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
 const http = require("http").Server(app);
 
-//initialize a new instance of socket.io by the HTTP server object.
+//initialize a new server instance of socket.io by the HTTP server object.
 //https://socket.io/get-started/chat
 const socket_io = require("socket.io");
 //Singleton
 let io = null;
-
+//NOTE: server's server io instance & socket instance, client's socket are all distinct
 const get_socket_io_instance = function(){
 	if(io === null){
 		io = socket_io(http);
@@ -35,19 +35,16 @@ const get_express_app_instance = function(){
 const port = 3000
 
 get_socket_io_instance().on("connection", (socket) => {
-	console.log("socket.io server got a new connection.");
-	/*
-	console.log("socket object:");
-	console.log(socket);
-	console.log("socket.data:");
-	console.log(socket.data);
-	console.log("socket.data.room_id:" + socket.data.room_id);
-	*/
-});
+	console.log("socket.io server got a new \"connection\" event.");
 
-//TODO
-get_socket_io_instance().on("ci", (socket) => {
-	console.log("socket.io server get a \"client init\" event, with emit data: room_id=");
+	//NOTE: client's socket instance is not server's socket.io io server/socket instances.
+	//NOTE: client may not have server's socket.io io server instance,
+	//NOTE: so io.on(...) outside of this connection event may not work.
+	socket.on("set room_id", (room_id) => {
+		console.log("socket.io server got a \"set room_id\" event, with room_id=" + room_id);
+		socket.join(room_id);
+		console.log(socket.rooms);
+	});
 });
 
 //node.js http module.

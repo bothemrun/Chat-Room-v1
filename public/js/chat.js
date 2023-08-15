@@ -2,9 +2,8 @@
 //https://socket.io/get-started/chat
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
 
-//TODO
 const socket = io();
-const room_id = "public_room";
+const room_id = "public_room";//TODO
 
 function create_div(class_, id, textContent){
 	const div = document.createElement("div");
@@ -177,6 +176,12 @@ function call_send_message_api(){
 		input.value = "";
 	}
 };
+
+//TODO
+socket.on("connect", () => {
+	console.log("connect ok. now set room_id.");
+	socket.emit("set room_id", room_id);
+});
 
 //when 1 of the clients send a new chat message,
 //socket.io broadcasting received from server.
