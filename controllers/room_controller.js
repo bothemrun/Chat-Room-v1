@@ -7,7 +7,7 @@ class Room_Controller{
 		console.log();
 		console.log("server got a GET /rooms request.");
 		
-		let rooms = null;
+		let rooms = undefined;
 		try{
 			rooms = await Room_Model.get_all_rooms_by_username(req.body.username);
 		}catch(err){

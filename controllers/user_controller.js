@@ -10,7 +10,7 @@ class User_Controller{
 
 	async register(req, res){
 		console.log();
-		console.log("sever POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
+		console.log("server POST register: got a register (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
 		const user = new User_Model(req.body.username, req.body.password);
 		try{
@@ -36,7 +36,7 @@ class User_Controller{
 
 	async login(req, res){
 		console.log();
-		console.log("sever POST login: got a login (username, password): (" + req.body.username + ", " + req.body.password + ").");
+		console.log("server POST login: got a login (username, password): (" + req.body.username + ", " + req.body.password + ").");
 
 		const user = new User_Model(req.body.username, req.body.password);
 		try{
@@ -69,7 +69,7 @@ class User_Controller{
 
 	async logout(req, res){
 		console.log();
-		console.log("sever POST logout: got a logout (username, password): (" + req.session.username + ", " + req.session.password + ").");
+		console.log("server POST logout: got a logout (username, password): (" + req.session.username + ", " + req.session.password + ").");
 
 		try{
 			let login_cnt = this.active_username_map.get(req.session.username);

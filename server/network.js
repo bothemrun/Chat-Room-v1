@@ -36,6 +36,18 @@ const port = 3000
 
 get_socket_io_instance().on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
+	/*
+	console.log("socket object:");
+	console.log(socket);
+	console.log("socket.data:");
+	console.log(socket.data);
+	console.log("socket.data.room_id:" + socket.data.room_id);
+	*/
+});
+
+//TODO
+get_socket_io_instance().on("ci", (socket) => {
+	console.log("socket.io server get a \"client init\" event, with emit data: room_id=");
 });
 
 //node.js http module.
