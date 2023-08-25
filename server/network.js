@@ -40,11 +40,6 @@ get_socket_io_instance().on("connection", (socket) => {
 	//NOTE: client's socket instance is not server's socket.io io server/socket instances.
 	//NOTE: client may not have server's socket.io io server instance,
 	//NOTE: so io.on(...) outside of this connection event may not work.
-	socket.on("set room_id", (room_id) => {
-		console.log("socket.io server got a \"set room_id\" event, with room_id=" + room_id);
-		socket.join(room_id);
-		console.log(socket.rooms);
-	});
 });
 
 //node.js http module.
