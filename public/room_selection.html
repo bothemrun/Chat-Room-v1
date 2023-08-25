@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Chat Room Selection</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="/css/room_selection.css">
+
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+		<script>
+			$(document).ready(function(){
+				$("#enter_room_button").on("click", enter_room);
+			});
+
+			$(document).ready(function(){
+				$("#logout").on("click", logout);
+			});
+		</script>
+	</head>
+
+	<body>
+		<div class="navbar">
+			<div id="title">Chat Room Selection</div>
+
+			<!-- <button id="logout" onclick="logout()">Logout</button> -->
+			<div id="logout_div">
+				<!-- <button id="logout" onclick="logout()">Logout</button> -->
+				<button id="logout">Logout</button>
+			</div>
+		</div>
+
+		<!-- prevent the navigation bar to block the topmost chat post. -->
+		<div><br><br><br></div>
+
+
+		<div id="all_chat_rooms_by_username">
+			<div class="room_post">
+				<div class="room_text">public_room</div>
+			</div>
+		</div>
+
+
+		<textarea id="input_room_id"></textarea>
+
+		<div class="navbar2">
+			<div id="enter_room_button_div">
+				<button id="enter_room_button">Enter Room</button>
+			</div>
+		</div>
+
+
+
+		<!--logout() in login.js-->
+		<!-- <script src="js/login.js"></script> -->
+		<script src="/js/login.js"></script>
+
+		<!--get_all_rooms_by_username() create_room_by_username_array()-->
+		<script src="/js/room_selection.js"></script>
+	</body>
+</html>
