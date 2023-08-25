@@ -24,10 +24,13 @@ app.use((req, res, next) => {
 
 //https://stackoverflow.com/questions/28362909/how-do-i-restrict-the-user-from-accessing-the-static-html-files-in-a-expressjs-n
 app.use((req, res, next) => {
+	//TODO: shut it down temporarily for testing html page
+	/*
 	if(req.path.indexOf(".html") >= 0){
 		console.log("server restricts access to html static files: " + req.path);
 		res.redirect("/");
 	}
+	*/
 	next();
 });
 

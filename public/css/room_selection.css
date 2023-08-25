@@ -1,0 +1,101 @@
+*{
+    background-color: rgb(20, 20, 20);
+    color: rgb(220, 220, 20);
+}
+
+/*textarea*/
+.input_chat {
+	width: 100%;
+}
+
+
+/*all rooms by username*/
+.room_post {
+    background-color: rgb(60, 60, 60);
+
+	width: 100%;
+}
+/*
+.chat_post .inline {
+    background-color: rgb(60, 60, 60);
+}
+*/
+.room_post .room_text{
+    background-color: rgb(60, 60, 60);
+}
+
+/*
+.inline { 
+    display: inline-block; 
+    margin:10px;
+}
+#username {
+    font-size: 36px;
+    font-weight: bold;
+}
+#timestamp {
+    font-size: 2px;
+    color: rgb(255, 60, 60);
+    float: right;
+}
+*/
+.room_text {
+    font-size: 26px;
+    /*margin: 6px;*/
+    padding: 10px;
+}
+
+.separate_div {
+    background-color: rgb(20, 20, 20);
+}
+
+
+/*navigation bar fixed at the top for the title & logout button*/
+.navbar {
+	background-color: rgb(250, 120, 30);
+	position: fixed;
+	top: 0;
+	width: 100%;
+}
+.navbar #title {
+	background-color: rgb(250, 120, 30);
+	float: left;
+	display: block;
+	font-size: 32px;
+	text-align: center;
+	padding: 8px;
+}
+.navbar #logout_div {
+	background-color: rgb(250, 120, 30);
+	display: block;
+	float: right;
+	margin: 10px;
+}
+.navbar #logout {
+	display: block;
+	background-color: rgb(80, 250, 80);
+	text-align: center;
+	padding: 8px;
+	margin: 8px;
+}
+
+
+/*send room selection input button bar*/
+.navbar2 {
+	background-color: rgb(250, 120, 30);
+	width: 104%;
+
+	height:50px;
+	position: relative;
+}
+.navbar2 #enter_room_button_div {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+}
+.navbar2 #enter_room_button {
+	background-color: rgb(80, 250, 80);
+	text-align: center;
+}
+
