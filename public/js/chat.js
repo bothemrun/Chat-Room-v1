@@ -92,6 +92,8 @@ async function enter_room_get_all_chat_logs(){
 
 	//HTTP GET
 	//xhttp.open("GET", "/messages");//TODO:
+	//TODO: the user selects a room, then frontend redirects to that room's URL.
+	//TODO: then here chat.js get room_id from client's current URL.
 	xhttp.open("GET", "/messages/" + room_id);
 
 	//specify http message body's Content-Type in header.
