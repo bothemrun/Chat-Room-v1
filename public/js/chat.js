@@ -177,10 +177,8 @@ function call_send_message_api(){
 	}
 };
 
-//TODO
 socket.on("connect", () => {
-	console.log("connect ok. now set room_id.");
-	socket.emit("set room_id", room_id);
+	console.log("connect ok.");
 });
 
 //when 1 of the clients send a new chat message,
