@@ -4,7 +4,11 @@
 	<head>
 		<title> Chat-Room-v1 Chat Room</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="css/chat.css">
+
+		<!-- <link rel="stylesheet" href="css/chat.css"> -->
+		<!-- client with URL host:port/rooms/:room_id trying to find host:port/rooms/css/chat.css -->
+		<link rel="stylesheet" href="/css/chat.css">
+
 		<script src="/socket.io/socket.io.js"></script>
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
@@ -60,10 +64,13 @@
 
 
 
-		<script src="js/chat.js"></script>
+		<!-- client with URL host:port/rooms/:room_id trying to find host:port/rooms/js/chat.js -->
+		<!-- <script src="js/chat.js"></script> -->
+		<script src="/js/chat.js"></script>
 
 		<!--logout() in login.js-->
-		<script src="js/login.js"></script>
+		<!-- <script src="js/login.js"></script> -->
+		<script src="/js/login.js"></script>
 	</body>
 
 </html>

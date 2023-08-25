@@ -2,6 +2,8 @@
 const express = require("express");
 const Room_Controller = require("../controllers/room_controller").Room_Controller;
 
+const chat_room_view = require("../views/chat_room_view");
+
 const router = express.Router();
 
 //TODO: authenticate by session
@@ -12,5 +14,11 @@ router.get("/rooms",
 router.post("/rooms", 
 	(...args) => Room_Controller.create_room_by_username_array(...args)
 );
+
+//TODO auth.is_authenticated_redirect_login()
+router.get("/rooms/:room_id", (req, res) => {
+	console.log("http request to /rooms/" + req.params.room_id);
+	chat_room_view.chat_room(res);
+});
 
 module.exports = {router};

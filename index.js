@@ -22,6 +22,9 @@ const auth = require("./util/authentication").Authentication;
 //homepage routes
 //app.get("/", auth.is_authenticated_redirect_login.bind(auth), (req, res) => {
 app.get("/", (...args) => auth.is_authenticated_redirect_login(...args), (req, res) => {
+	//TODO: redirect to room selection page, not directly to the public room.
+
+	//if to the login page, then sendFile already ends the request response cycle, so won't execute this line.
 	chat_room_view.chat_room(res);
 });
 
