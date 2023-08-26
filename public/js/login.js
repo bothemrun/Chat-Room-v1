@@ -1,4 +1,10 @@
-function redirect_home(){
+//TODO: frontend util for chat.js & room_selection.js
+function redirect_home(uri){
+	console.log(`client redirects & reloads to URI: ${uri}`);
+
+	window.location.assign( window.location.origin + uri );
+
+	/*
 	path = "/";
 	console.log("client redirects to " + path);
 
@@ -14,6 +20,7 @@ function redirect_home(){
 	xhttp.open("GET", path);
 	xhttp.setRequestHeader("Content-Type", "application/json");
 	xhttp.send();
+	*/
 }
 
 function register(){
@@ -69,7 +76,7 @@ function login(){
 			if(this.status !== 200){
 				console.log("login: username not match or password incorrect!");
 				window.alert("login: username not match or password incorrect!");
-			}else redirect_home();
+			}else redirect_home("/room_selection.html");
 		};
 
 		xhttp.open("POST", "/logins", false);
@@ -99,7 +106,7 @@ function logout(){
 		if(this.status !== 200){
 			console.log("logout: error from server.");
 			window.alert("logout: error from server.");
-		}else redirect_home();
+		}else redirect_home("/");
 	};
 
 	//xhttp.open("POST", "/logins");

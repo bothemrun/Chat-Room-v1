@@ -3,7 +3,8 @@
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
 
 const socket = io();
-const room_id = "public_room";//TODO
+const room_id = window.location.pathname.split("/")[2];//TODO: get room_id by window URL (so must redirect to room's own URL)
+console.log("room_id = " + room_id);
 
 function create_div(class_, id, textContent){
 	const div = document.createElement("div");
@@ -18,7 +19,7 @@ function append_new_chat_log(new_msg, timestamp_utc, username){
 	//const timestamp_local = (new Date(timestamp_utc)).toString();
 	const d = new Date(timestamp_utc);
 	const year = d.getFullYear();
-	const month = d.getMonth();
+	const month = d.getMonth() + 1;//getMonth() 0-based
 	const date = d.getDate();
 	let hour = d.getHours();
 	const minute = d.getMinutes();
@@ -56,7 +57,7 @@ function append_new_chat_log(new_msg, timestamp_utc, username){
 
 	//chats scrolled down to the latest.
 	window.scrollTo(0, document.body.scrollHeight);
-};
+}
 
 //when the user enters the chat room, it gets all old chat logs.
 async function enter_room_get_all_chat_logs(){
@@ -108,7 +109,7 @@ async function enter_room_get_all_chat_logs(){
 	xhttp.setRequestHeader("Content-Type", "application/json");
 
 	xhttp.send();
-};
+}
 
 enter_room_get_all_chat_logs();
 
@@ -177,7 +178,7 @@ function call_send_message_api(){
 		//TODO: will nonblocking I/O causes the messages cleared before ajax sent?
 		input.value = "";
 	}
-};
+}
 
 socket.on("connect", () => {
 	console.log("connect ok.");
