@@ -49,40 +49,41 @@ function get_all_rooms_by_username(){
 get_all_rooms_by_username();
 
 
-//TODO: frontend util for chat.js & room_selection.js
-function redirect_reload(uri){
-	console.log(`client redirects & reloads to URI: ${uri}`);
-
-	window.location.assign( window.location.origin + uri );
-	/*
-	const xhttp = new XMLHttpRequest();
+async function uri_exist(uri){
+	const xhttp = XMLHttpRequest();
 	xhttp.onload = function(){
-		console.log(`client successfully sent an HTTP GET /rooms with status: ${ this.status } ${ this.statusText }`);
-		console.log(`with responseText: ${ this.responseText }`);
-
-		if(this.status !== 200){
-			console.log("[error] [enter_room() redirect_reload()]: room_id not exist!!!");
-			window.alert("[error]: room_id not exist!!!");
-			return;
-			//TODO: need to redirect & reload to room selection page? what if client manually reload the page?
-		}
-
-		//ajax won't redirect in the frontend, even if the backend redirects.
-		//https://stackoverflow.com/questions/27202075/expressjs-res-redirect-not-working-as-expected
-		window.location.reload();
+		//200 or 201
+		if(this.status/100 !== 2) return false;
+		return true;
 	};
 
 	xhttp.open("GET", uri);
 	xhttp.setRequestHeader("Content-Type", "application/json");
 	xhttp.send();
-	*/
+}
+
+//TODO: frontend util for chat.js & room_selection.js
+async function redirect_reload(uri){
+	console.log(`client redirects & reloads to URI: ${uri}`);
+
+	//if URI not exist, go back.
+	if(uri_exist(uri) === false){
+		console.log(`[error] URI:${ uri } doesn't exist!!!`);
+		return false;
+	}
+	window.location.assign( window.location.origin + uri );
+	//won't return true here.
 }
 
 function enter_room(){
 	const input_room_id = document.getElementById("input_room_id");
 
 	if(input_room_id.value){
-		redirect_reload(`/rooms/${ encodeURIComponent( input_room_id.value ) }`);
+		const uri = `/rooms/${ encodeURIComponent( input_room_id.value ) }`;
+		if( redirect_reload(uri) === false){
+			//another implementation way: keep the room_id array global variable
+			console.log(`[error] enter_room(): URI:${ uri } not exist !!!`);
+		}
 	}
 
 	input_room_id.value = "";
@@ -108,6 +109,9 @@ function create_room(){
 			}else{
 				console.log(`create_room successful with room_id:${ JSON.parse( this.responseText ).room_id }`);
 				window.alert(`create_room successful with room_id:${ JSON.parse( this.responseText ).room_id }`);
+
+				//easy way to reloads the new room
+				setTimeout(room_selection_page, 1000);
 			}
 		};
 
@@ -123,6 +127,8 @@ function create_room(){
 }
 
 function room_selection_page(){
-	redirect_reload(`/room_selection.html`);//TODO: another URI if restarted blocking .html requests.
+	//TODO: another URI if restarted blocking .html requests.
+	if( redirect_reload(`/room_selection.html`) === false)
+		console.log(`[error] enter_room(): URI:${ uri } not exist !!!`);
 }
 

@@ -41,6 +41,7 @@ class Room_Model{
 
 	static async create_room_by_username_array(username_array){
 		//check all usernames first. no need for rollback.
+		const username_set = new Set();
 		for(const username of username_array){
 			const exist_username = await User_Model.username_exist(username);
 
@@ -48,6 +49,9 @@ class Room_Model{
 				console.log("[error] Room_Model.create_room(): " + Status_Code.USERNAME_NOT_EXIST);
 				throw Status_Code.USERNAME_NOT_EXIST;
 			}
+
+			if(username_set.has(username) === true) throw Status_Code.USERNAME_CONFLICT;
+			username_set.add(username);
 		}
 
 		const room_id = this.username_array2room_id(username_array);
