@@ -10,8 +10,34 @@ const app = express();
 //https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
 const http = require("http").Server(app);
 
-//TODO
-const sessionStore = require("../routers/root_middleware").sessionStore;
+
+//user login by express-session
+//https://expressjs.com/en/resources/middleware/session.html
+const express_session = require("express-session");
+
+//TODO: session store
+let sessionStore = null;
+/*
+const get_sessionStore_instance = async function(){
+	if(sessionStore === null) sessionStore = await new express_session.MemoryStore();
+	return sessionStore;
+};
+get_sessionStore_instance();
+console.log(sessionStore);
+*/
+
+app.use(express_session({
+	store: ( sessionStore = new express_session.MemoryStore() ),
+	//store: get_sessionStore_instance(), //TODO: session store
+	secret: "https://expressjs.com/en/resources/middleware/session.html",
+	resave: false,
+	saveUninitialized: true,
+}));
+
+console.log(sessionStore);
+//console.log(get_sessionStore_instance());
+
+
 
 //initialize a new instance of socket.io by the HTTP server object.
 //https://socket.io/get-started/chat
@@ -42,7 +68,11 @@ get_socket_io_instance().on("connection", (socket) => {
 	console.log("on connection event, cookie:");
 	console.log(socket.request.headers.cookie);
 
-	const sessionID = socket.request.headers.cookie.split(".")[0].split("%3")[1];
+	const sessionID = socket.request.headers.cookie.split("=")[1].split(".")[0].split("%3A")[1];
+	/*
+	console.log(socket.request.headers.cookie.split("."));
+	console.log(socket.request.headers.cookie.split(".")[0].split("%3A"));
+	*/
 	console.log("socket.io: parsed sessionID:" + sessionID);
 
 	console.log("socket.io: sessionStore:");
@@ -53,6 +83,7 @@ get_socket_io_instance().on("connection", (socket) => {
 	});
 
 
+	/*
 	//TODO
 	//get_socket_io_instance().on("ci", (socket) => {
 	socket.on("ci socket", () => {
@@ -72,6 +103,7 @@ get_socket_io_instance().on("connection", (socket) => {
 		console.log("on set room_id event, cookie:");
 		console.log(socket.request.headers.cookie);
 	});
+	*/
 });
 //TODO: can't get emit events from clients, since client doesn't have to socket.io server io instance.
 //note that server side's server instance & socket instance, and client side's socket instance are all distinct.
