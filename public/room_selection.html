@@ -12,6 +12,10 @@
 			});
 
 			$(document).ready(function(){
+				$("#create_room_button").on("click", create_room);
+			});
+
+			$(document).ready(function(){
 				$("#logout").on("click", logout);
 			});
 		</script>
@@ -41,12 +45,17 @@
 
 		<textarea id="input_room_id"></textarea>
 
+		<div id="navbar_login">
+			<button class="button_login" id="enter_room_button">Enter Room</button>
+			<button class="button_login" id="create_room_button">Create Room</button>
+		</div>
+		<!--
 		<div class="navbar2">
 			<div id="enter_room_button_div">
 				<button id="enter_room_button">Enter Room</button>
 			</div>
 		</div>
-
+		-->
 
 
 		<!--logout() in login.js-->
