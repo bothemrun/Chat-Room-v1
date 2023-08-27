@@ -15,7 +15,11 @@ const http = require("http").Server(app);
 //https://expressjs.com/en/resources/middleware/session.html
 const express_session = require("express-session");
 
+let sessionStore = null;
+//TODO: why session store can't use singleton instance getter?
+
 app.use(express_session({
+	store: ( sessionStore = new express_session.MemoryStore() ),
 	secret: "https://expressjs.com/en/resources/middleware/session.html",
 	resave: false,
 	saveUninitialized: true
@@ -52,6 +56,14 @@ get_socket_io_instance().on("connection", (socket) => {
 	//NOTE: client's socket instance is not server's socket.io io server/socket instances.
 	//NOTE: client may not have server's socket.io io server instance,
 	//NOTE: so io.on(...) outside of this connection event may not work.
+	console.log(socket.request.headers.cookie);
+	const sessionID = socket.request.headers.cookie.split("=")[1].split(".")[0].split("%3A")[1];
+	console.log("socket.io: parsed sessionID:" + sessionID);
+	console.log(sessionStore);
+	sessionStore.get(sessionID, function(err, session){
+		console.log(`socket.io: session get from sessionStore (username=${ session.username }) :`);
+		console.log(session);
+	});
 });
 
 //node.js http module.
