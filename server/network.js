@@ -10,6 +10,18 @@ const app = express();
 //https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
 const http = require("http").Server(app);
 
+
+//user login by express-session
+//https://expressjs.com/en/resources/middleware/session.html
+const express_session = require("express-session");
+
+app.use(express_session({
+	secret: "https://expressjs.com/en/resources/middleware/session.html",
+	resave: false,
+	saveUninitialized: true
+}));
+
+
 //initialize a new server instance of socket.io by the HTTP server object.
 //https://socket.io/get-started/chat
 const socket_io = require("socket.io");
