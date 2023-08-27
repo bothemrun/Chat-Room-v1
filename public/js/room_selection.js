@@ -122,3 +122,7 @@ function create_room(){
 	input_room_id.value = "";
 }
 
+function room_selection_page(){
+	redirect_reload(`/room_selection.html`);//TODO: another URI if restarted blocking .html requests.
+}
+

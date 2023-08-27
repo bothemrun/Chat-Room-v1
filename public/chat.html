@@ -14,6 +14,10 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 		<script>
 			$(document).ready(function(){
+				$("#room_selection_page").on("click", room_selection_page);
+			});
+
+			$(document).ready(function(){
 				$("#logout").on("click", logout);
 			});
 
@@ -28,10 +32,15 @@
 		<div class="navbar">
 			<div id="title">Chat Room v1</div>
 
+			<!-- this logout button will be on the right of room_selection_page button below -->
 			<!-- <button id="logout" onclick="logout()">Logout</button> -->
-			<div id="logout_div">
+			<div class="logout_div">
 				<!-- <button id="logout" onclick="logout()">Logout</button> -->
 				<button id="logout">Logout</button>
+			</div>
+
+			<div class="logout_div">
+				<button id="room_selection_page">Room Selection</button>
 			</div>
 		</div>
 
@@ -71,6 +80,8 @@
 		<!--logout() in login.js-->
 		<!-- <script src="js/login.js"></script> -->
 		<script src="/js/login.js"></script>
+
+		<script src="/js/room_selection.js"></script>
 	</body>
 
 </html>
