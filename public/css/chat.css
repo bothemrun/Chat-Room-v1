@@ -61,11 +61,18 @@
 	text-align: center;
 	padding: 8px;
 }
-.navbar #logout_div {
+.navbar .logout_div {
 	background-color: rgb(250, 120, 30);
 	display: block;
 	float: right;
 	margin: 10px;
+}
+.navbar #room_selection_page {
+	display: block;
+	background-color: rgb(80, 250, 80);
+	text-align: center;
+	padding: 8px;
+	margin: 8px;
 }
 .navbar #logout {
 	display: block;
@@ -74,7 +81,6 @@
 	padding: 8px;
 	margin: 8px;
 }
-
 
 /*send chat input button bar*/
 .navbar2 {
