@@ -42,7 +42,7 @@ function register(){
 			}
 		};
 
-		xhttp.open("POST", "/users", false);
+		xhttp.open("POST", "/users");
 
 		xhttp.setRequestHeader("Content-Type", "application/json");
 

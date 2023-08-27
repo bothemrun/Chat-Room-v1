@@ -55,20 +55,21 @@ class Room_Controller{
 		console.log();
 		console.log("server got a POST /rooms request.");
 
+		let room_id = null;
 		try{
-			await Room_Model.create_room_by_username_array(req.body.username_array)
+			room_id = await Room_Model.create_room_by_username_array(req.body.username_array)
 		}catch(err){
 			console.log("[error] /rooms room_controller create_room_by_username_array(): " + err);
 			res.status(500);
 			res.json({
-				"rooms": "database error: " + err
+				"room_id": "database error: " + err
 			});
 			return;
 		}
 
 		res.status(201);
 		res.json({
-			"rooms": true
+			"room_id": room_id
 		});
 	}
 }

@@ -68,6 +68,8 @@ class Room_Model{
 			console.log("[error] Room_Model.create_room(): " + err);
 			throw err;
 		}
+
+		return room_id;
 	}
 
 	static async join_room_by_username_room_id(username, room_id){
