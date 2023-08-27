@@ -3,7 +3,8 @@
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
 
 const socket = io();
-const room_id = window.location.pathname.split("/")[2];//TODO: get room_id by window URL (so must redirect to room's own URL)
+//get room_id by window URL (so must redirect to room's own URL)
+const room_id = window.location.pathname.split("/")[2];
 console.log("room_id = " + room_id);
 
 function create_div(class_, id, textContent){
@@ -92,9 +93,6 @@ async function enter_room_get_all_chat_logs(){
 	};
 
 	//HTTP GET
-	//xhttp.open("GET", "/messages");//TODO:
-	//TODO: the user selects a room, then frontend redirects to that room's URL.
-	//TODO: then here chat.js get room_id from client's current URL.
 	xhttp.open("GET", "/messages/" + room_id);
 
 	//specify http message body's Content-Type in header.
@@ -152,7 +150,6 @@ function call_send_message_api(){
 		};
 
 		//HTTP POST
-		//xhttp.open("POST", "/messages");//TODO
 		xhttp.open("POST", "/messages/" + room_id);
 
 		//specify http message body's Content-Type in header.

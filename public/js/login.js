@@ -39,6 +39,9 @@ function register(){
 			if(this.status !== 201){
 				console.log("register: username conflict!");
 				window.alert("register: username conflict!");
+			}else{
+				console.log("register: successful");
+				window.alert("register: successful");
 			}
 		};
 
