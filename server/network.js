@@ -10,6 +10,9 @@ const app = express();
 //https://nodejs.org/api/http.html#httpcreateserveroptions-requestlistener
 const http = require("http").Server(app);
 
+//TODO
+const sessionStore = require("../routers/root_middleware").sessionStore;
+
 //initialize a new instance of socket.io by the HTTP server object.
 //https://socket.io/get-started/chat
 const socket_io = require("socket.io");
@@ -36,12 +39,28 @@ const port = 3000
 
 get_socket_io_instance().on("connection", (socket) => {
 	console.log("socket.io server got a new connection.");
+	console.log("on connection event, cookie:");
+	console.log(socket.request.headers.cookie);
+
+	const sessionID = socket.request.headers.cookie.split(".")[0].split("%3")[1];
+	console.log("socket.io: parsed sessionID:" + sessionID);
+
+	console.log("socket.io: sessionStore:");
+	console.log(sessionStore);
+	sessionStore.get(sessionID, function(err, session){
+		console.log("socket.io: session get from sessionStore:");
+		console.log(session);
+	});
+
 
 	//TODO
 	//get_socket_io_instance().on("ci", (socket) => {
 	socket.on("ci socket", () => {
 		console.log("socket.io server got a \"ci socket\" event, socket:");
-		console.log(socket);
+		console.log("on ci socket event, cookie:");
+		console.log(socket.request.headers.cookie);
+
+		//TODO: console.log(socket);
 
 		console.log("query key:" + socket.handshake.query.my_query_key);
 		//console.log("data key:" + socket.data.my_data_key);
@@ -50,6 +69,8 @@ get_socket_io_instance().on("connection", (socket) => {
 	//TODO:
 	socket.on("set room_id", (client_room_id) => {
 		console.log("socket.io server got a \"set room_id\" event, with client_room_id:" + client_room_id);
+		console.log("on set room_id event, cookie:");
+		console.log(socket.request.headers.cookie);
 	});
 });
 //TODO: can't get emit events from clients, since client doesn't have to socket.io server io instance.
