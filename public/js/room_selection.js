@@ -89,5 +89,36 @@ function enter_room(){
 }
 
 function create_room(){
+	const input_room_id = document.getElementById("input_room_id");
+	if(input_room_id.value){
+		const username_array = input_room_id.value.split(",");
+		if(username_array.length === 0){
+			window.alert("[fail] create_room: username array empty!!");
+			return;
+		}
+
+		const xhttp = new XMLHttpRequest();
+		xhttp.onload = function(){
+			console.log("client successfully received HTTP POST /rooms response:" + this.status + " " + this.statusText);
+			console.log("with responseText:" + this.responseText);
+
+			if(this.status !== 201){
+				console.log(`create_room error: ${ JSON.parse( this.responseText ).room_id }`);
+				window.alert(`create_room error: ${ JSON.parse( this.responseText ).room_id }`);
+			}else{
+				console.log(`create_room successful with room_id:${ JSON.parse( this.responseText ).room_id }`);
+				window.alert(`create_room successful with room_id:${ JSON.parse( this.responseText ).room_id }`);
+			}
+		};
+
+		xhttp.open("POST", "/rooms");
+		xhttp.setRequestHeader("Content-Type", "application/json");
+
+		xhttp.send(JSON.stringify({
+			"username_array": username_array
+		}));
+	}
+
+	input_room_id.value = "";
 }
 
