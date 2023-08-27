@@ -87,3 +87,7 @@ function enter_room(){
 
 	input_room_id.value = "";
 }
+
+function create_room(){
+}
+

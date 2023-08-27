@@ -80,7 +80,22 @@
 }
 
 
-/*send room selection input button bar*/
+/*send room selection & creation input button bar*/
+#navbar_login {
+	display: flex;
+	justify-content: center;
+	
+	width: 100%;
+}
+.button_login {
+	background-color: rgb(250, 120, 30);
+	text-align: center;
+	display: inline-block;
+	padding: 10px 20px;
+	margin: 4px;
+	width: 100%;
+}
+/*
 .navbar2 {
 	background-color: rgb(250, 120, 30);
 	width: 104%;
@@ -98,4 +113,4 @@
 	background-color: rgb(80, 250, 80);
 	text-align: center;
 }
-
+*/
