@@ -8,26 +8,30 @@ function create_div(class_, id_, textContent_){
 }
 
 async function uri_exist(uri){
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function(){
-		//200 or 201
-		if(this.status/100 !== 2) return false;
-		return true;
-	};
+	return new Promise((resolve, reject) => {
+		const xhttp = new XMLHttpRequest();
+		xhttp.onload = function(){
+			//200 or 201
+			if(this.status/100 !== 2) resolve(false);
+			resolve(true);
+		};
 
-	xhttp.open("GET", uri);
-	xhttp.setRequestHeader("Content-Type", "application/json");
-	xhttp.send();
+		xhttp.open("GET", uri);
+		xhttp.setRequestHeader("Content-Type", "application/json");
+		xhttp.send();
+	});
 }
 
 async function redirect_reload(uri){
 	console.log(`client redirects & reloads to URI: ${uri}`);
 
 	//if URI not exist, go back.
-	if(uri_exist(uri) === false){
+	if(await uri_exist(uri) === false){
 		console.log(`[error] URI:${ uri } doesn't exist!!!`);
+		window.alert(`[error] URI:${ uri } doesn't exist!!!`);
 		return false;
 	}
+
 	window.location.assign( window.location.origin + uri );
 	//won't return true here.
 }
