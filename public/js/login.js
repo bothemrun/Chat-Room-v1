@@ -1,28 +1,4 @@
 import {redirect_reload} from "./util.js";
-/*
-function redirect_home(uri){
-	console.log(`client redirects & reloads to URI: ${uri}`);
-
-	window.location.assign( window.location.origin + uri );
-
-	//or old:
-	path = "/";
-	console.log("client redirects to " + path);
-
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function(){
-		console.log("client successfully redirects to " + path + " & received status:" + this.status + " " + this.statusText);
-		console.log(". with responseText:" + this.responseText);
-
-		//ajax won't redirect in the frontend, even if the backend redirects.
-		//https://stackoverflow.com/questions/27202075/expressjs-res-redirect-not-working-as-expected
-		window.location.reload();
-	};
-	xhttp.open("GET", path);
-	xhttp.setRequestHeader("Content-Type", "application/json");
-	xhttp.send();
-}
-*/
 
 export function register(){
 	const input_username = document.getElementById("input_username");

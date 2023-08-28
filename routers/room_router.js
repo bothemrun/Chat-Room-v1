@@ -18,11 +18,6 @@ router.post("/rooms",
 //TODO auth.is_authenticated_redirect_login()
 router.get("/rooms/:room_id",
 	(...args) => Room_Controller.enter_room_by_room_id(...args)
-	/* (req, res) => {
-	console.log("http request to /rooms/" + req.params.room_id);
-	chat_room_view.chat_room(res);
-	}
-	*/
 );
 
 module.exports = {router};

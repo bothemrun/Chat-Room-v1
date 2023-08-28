@@ -52,6 +52,7 @@ class Authentication{
 	}
 
 	static is_logged_in(req){
+		//TODO: use session store for checking?
 		return Boolean(req.session.username);
 	}
 
