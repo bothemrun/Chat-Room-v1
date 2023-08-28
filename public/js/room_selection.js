@@ -47,7 +47,8 @@ export function enter_room(){
 		const uri = `/rooms/${ encodeURIComponent( input_room_id.value ) }`;
 		if( redirect_reload(uri) === false){
 			//another implementation way: keep the room_id array global variable
-			console.log(`[error] enter_room(): URI:${ uri } not exist !!!`);
+			console.log(`[error] enter_room(): room_id:${ uri } not exist !!!`);
+			window.alert(`[error] enter_room(): room_id:${ uri } not exist !!!`);
 		}
 	}
 
