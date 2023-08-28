@@ -1,4 +1,3 @@
-
 //frontend util.js
 function create_div(class_, id_, textContent_){
 	const div = document.createElement("div");
@@ -21,7 +20,6 @@ async function uri_exist(uri){
 	xhttp.send();
 }
 
-//TODO: frontend util for chat.js & room_selection.js
 async function redirect_reload(uri){
 	console.log(`client redirects & reloads to URI: ${uri}`);
 

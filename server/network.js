@@ -81,6 +81,4 @@ http.listen(port, () => {
 	console.log(`socket.io server running on ${port}`);
 });
 
-//module.exports = {get_socket_io_instance_fn, hi:"heelo"};
-//module.exports.get_socket_io_instance_fn = get_socket_io_instance_fn;
 module.exports = {app, get_socket_io_instance, get_express_app_instance};

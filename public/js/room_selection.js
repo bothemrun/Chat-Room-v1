@@ -1,6 +1,4 @@
 //room_selection.js
-//since we open express.static( path.join(__dirname, "..", public) ),
-//I guess the root directory for browswer frontend is /public
 import { create_div, redirect_reload } from "./util.js"; //"util.js"; //"/js/util.js"
 
 function append_room(room_id){
@@ -42,9 +40,6 @@ export function get_all_rooms_by_username(){
 //execute in html script module: get_all_rooms_by_username();
 
 
-
-//function enter_room(){
-//for <script type="module">
 export function enter_room(){
 	const input_room_id = document.getElementById("input_room_id");
 
@@ -59,7 +54,6 @@ export function enter_room(){
 	input_room_id.value = "";
 }
 
-//function create_room(){
 export function create_room(){
 	const input_room_id = document.getElementById("input_room_id");
 	if(input_room_id.value){

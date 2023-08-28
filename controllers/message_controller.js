@@ -68,7 +68,7 @@ class Message_Controller{
 		}
 		console.log("server got HTTP GET request /messages/" + req.params.room_id);
 
-		//TODO: socket.io join room
+		//socket.io join room is done very early on "connection" event, joining all the user's rooms, with filtering in frontend
 
 		let msgs = undefined;
 		try{
