@@ -1,10 +1,11 @@
-//TODO: frontend util for chat.js & room_selection.js
+import {redirect_reload} from "./util.js";
+/*
 function redirect_home(uri){
 	console.log(`client redirects & reloads to URI: ${uri}`);
 
 	window.location.assign( window.location.origin + uri );
 
-	/*
+	//or old:
 	path = "/";
 	console.log("client redirects to " + path);
 
@@ -20,10 +21,10 @@ function redirect_home(uri){
 	xhttp.open("GET", path);
 	xhttp.setRequestHeader("Content-Type", "application/json");
 	xhttp.send();
-	*/
 }
+*/
 
-function register(){
+export function register(){
 	const input_username = document.getElementById("input_username");
 	const input_password = document.getElementById("input_password");
 
@@ -63,7 +64,7 @@ function register(){
 	input_password.value = "";
 }
 
-function login(){
+export function login(){
 	const input_username = document.getElementById("input_username");
 	const input_password = document.getElementById("input_password");
 
@@ -79,7 +80,7 @@ function login(){
 			if(this.status !== 200){
 				console.log("login: username not match or password incorrect!");
 				window.alert("login: username not match or password incorrect!");
-			}else redirect_home("/room_selection.html");
+			}else redirect_reload("/room_selection.html"); //redirect_home("/room_selection.html");
 		};
 
 		xhttp.open("POST", "/logins");
@@ -99,7 +100,7 @@ function login(){
 	input_password.value = "";
 }
 
-function logout(){
+export function logout(){
 	const xhttp = new XMLHttpRequest();
 
 	xhttp.onload = function(){
@@ -109,7 +110,7 @@ function logout(){
 		if(this.status !== 200){
 			console.log("logout: error from server.");
 			window.alert("logout: error from server.");
-		}else redirect_home("/");
+		}else redirect_reload("/"); //redirect_home("/");
 	};
 
 	//xhttp.open("POST", "/logins");

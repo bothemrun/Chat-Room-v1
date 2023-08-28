@@ -9,10 +9,16 @@
 		<!-- client with URL host:port/rooms/:room_id trying to find host:port/rooms/css/chat.css -->
 		<link rel="stylesheet" href="/css/chat.css">
 
-		<script src="/socket.io/socket.io.js"></script>
+		<!-- <script src="/socket.io/socket.io.js"></script> -->
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-		<script>
+		<script type="module">
+			import {enter_room_get_all_chat_logs, call_send_message_api} from "/js/chat.js";
+			import {room_selection_page} from "/js/room_selection.js"; //"./js/room_selection.js"; try to get from host:port/rooms/js/rooms_selection.js
+			import {logout} from "/js/login.js";
+			
+			$(document).ready(enter_room_get_all_chat_logs);
+
 			$(document).ready(function(){
 				$("#room_selection_page").on("click", room_selection_page);
 			});
@@ -27,6 +33,8 @@
 
 			//TODO: execute functions of included source files here.
 		</script>
+		
+		<script src="/socket.io/socket.io.js"></script>
 	</head>
 
 	<body>
@@ -77,13 +85,14 @@
 
 		<!-- client with URL host:port/rooms/:room_id trying to find host:port/rooms/js/chat.js -->
 		<!-- <script src="js/chat.js"></script> -->
-		<script src="/js/chat.js"></script>
+		<!-- <script src="/js/chat.js"></script> -->
 
-		<!--logout() in login.js-->
+		<!-- //TODO execute the remaining functions -->
+		<script type="module" src="/js/chat.js"></script>
+
+		<!-- logout() in login.js-->
 		<!-- <script src="js/login.js"></script> -->
-		<script src="/js/login.js"></script>
-
-		<script src="/js/room_selection.js"></script>
+		<!-- <script src="/js/login.js"></script> -->
 	</body>
 
 </html>

@@ -6,7 +6,9 @@
 		<link rel="stylesheet" href="css/login.css">
 
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
-		<script>
+		<script type="module">
+			import {login, register} from "/js/login.js";
+
 			$(document).ready(function(){
 				//on(event, handler): hander is a function, not the execution.
 				//https://stackoverflow.com/questions/44611871/calling-jquery-event-handler-on-click-anonymous-vs-named-function-behaviour
@@ -46,6 +48,6 @@
 			<button class="button_login" id="button_register">Register</button>
 		</div>
 
-		<script src="js/login.js"></script>
+		<!-- <script src="js/login.js"></script> -->
 	</body>
 </html>
