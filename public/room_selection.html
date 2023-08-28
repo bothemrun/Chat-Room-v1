@@ -16,7 +16,8 @@
 		<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
 		<!-- <script type="module" src="./js/room_selection.js"> -->
 		<script type="module">
-			import {enter_room, create_room, get_all_rooms_by_username} from "./js/room_selection.js"; //"./room_selection.js";
+			import {enter_room, create_room, get_all_rooms_by_username} from "/js/room_selection.js"; //"./room_selection.js";
+			import {logout} from "/js/login.js";
 
 			$(document).ready(get_all_rooms_by_username);
 
@@ -78,7 +79,7 @@
 
 		<!--logout() in login.js-->
 		<!-- <script src="js/login.js"></script> -->
-		<script src="/js/login.js"></script>
+		<!-- <script src="/js/login.js"></script> -->
 
 		<!--get_all_rooms_by_username() create_room_by_username_array()-->
 		<!-- <script type="module" src="/js/room_selection.js"></script> -->
