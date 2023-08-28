@@ -1,13 +1,7 @@
 //room_selection.js
-
-//TODO: frontend util for chat.js & room_selection.js
-function create_div(class_, id_, textContent_){
-	const div = document.createElement("div");
-	if(class_ !== null) div.setAttribute("class", class_);
-	if(id_ !== null) div.setAttribute("id", id_);
-	if(textContent_ !== null) div.textContent = textContent_;
-	return div;
-}
+//since we open express.static( path.join(__dirname, "..", public) ),
+//I guess the root directory for browswer frontend is /public
+import { create_div, redirect_reload } from "./util.js"; //"util.js"; //"/js/util.js"
 
 function append_room(room_id){
 	const room_post = create_div("room_post", null, null);
@@ -23,7 +17,8 @@ function append_room(room_id){
 	window.scrollTo(0, document.body.scrollHeight);
 }
 
-function get_all_rooms_by_username(){
+//function get_all_rooms_by_username(){
+export function get_all_rooms_by_username(){
 	//as in chat.js call_send_message_api(),
 	//the username is obtained by req.session.username in server's Message_Controller, not provided by the client
 
@@ -44,36 +39,13 @@ function get_all_rooms_by_username(){
 	xhttp.send();
 }
 
-get_all_rooms_by_username();
+//execute in html script module: get_all_rooms_by_username();
 
 
-async function uri_exist(uri){
-	const xhttp = new XMLHttpRequest();
-	xhttp.onload = function(){
-		//200 or 201
-		if(this.status/100 !== 2) return false;
-		return true;
-	};
 
-	xhttp.open("GET", uri);
-	xhttp.setRequestHeader("Content-Type", "application/json");
-	xhttp.send();
-}
-
-//TODO: frontend util for chat.js & room_selection.js
-async function redirect_reload(uri){
-	console.log(`client redirects & reloads to URI: ${uri}`);
-
-	//if URI not exist, go back.
-	if(uri_exist(uri) === false){
-		console.log(`[error] URI:${ uri } doesn't exist!!!`);
-		return false;
-	}
-	window.location.assign( window.location.origin + uri );
-	//won't return true here.
-}
-
-function enter_room(){
+//function enter_room(){
+//for <script type="module">
+export function enter_room(){
 	const input_room_id = document.getElementById("input_room_id");
 
 	if(input_room_id.value){
@@ -87,7 +59,8 @@ function enter_room(){
 	input_room_id.value = "";
 }
 
-function create_room(){
+//function create_room(){
+export function create_room(){
 	const input_room_id = document.getElementById("input_room_id");
 	if(input_room_id.value){
 		const username_array = input_room_id.value.split(",");
@@ -124,7 +97,7 @@ function create_room(){
 	input_room_id.value = "";
 }
 
-function room_selection_page(){
+export function room_selection_page(){
 	//TODO: another URI if restarted blocking .html requests.
 	if( redirect_reload(`/room_selection.html`) === false)
 		console.log(`[error] enter_room(): URI:${ uri } not exist !!!`);
