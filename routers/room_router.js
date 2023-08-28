@@ -6,7 +6,7 @@ const chat_room_view = require("../views/chat_room_view");
 
 const router = express.Router();
 
-//TODO: authenticate by session
+//TODO: authenticate by session, 'cuz we get all rooms by req.session.username
 router.get("/rooms",
 	(...args) => Room_Controller.get_all_rooms_by_username(...args)
 );
@@ -20,7 +20,6 @@ router.get("/rooms/:room_id",
 	(...args) => Room_Controller.enter_room_by_room_id(...args)
 	/* (req, res) => {
 	console.log("http request to /rooms/" + req.params.room_id);
-	//TODO: check room_id exist or not
 	chat_room_view.chat_room(res);
 	}
 	*/

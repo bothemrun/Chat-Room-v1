@@ -74,4 +74,4 @@ class Room_Controller{
 	}
 }
 
-module.exports = {Room_Controller};
+module.exports = {Room_Controller, Room_Model};

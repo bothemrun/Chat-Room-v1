@@ -4,15 +4,6 @@ const path = require("path");
 const auth = require("../util/authentication").Authentication;
 const app = require("../server/network").app;
 
-//user login by express-session
-//https://expressjs.com/en/resources/middleware/session.html
-const session = require("express-session");
-
-app.use(session({
-	secret: "https://expressjs.com/en/resources/middleware/session.html",
-	resave: false,
-	saveUninitialized: true
-}));
 
 //root-level middleware logger
 app.use((req, res, next) => {

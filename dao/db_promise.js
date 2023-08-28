@@ -1,5 +1,6 @@
 //await wrapper for sqlite3
-//TODO: sqlite3 doesn't support Promise, can't use await. maybe use sqlite?
+//sqlite3 doesn't support Promise, can't use await.
+
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
 const db = new sqlite3.Database(path.join(__dirname, "..", "dao", "sqlite3_db.db"));

@@ -39,6 +39,9 @@ function register(){
 			if(this.status !== 201){
 				console.log("register: username conflict!");
 				window.alert("register: username conflict!");
+			}else{
+				console.log("register: successful");
+				window.alert("register: successful");
 			}
 		};
 
@@ -79,7 +82,7 @@ function login(){
 			}else redirect_home("/room_selection.html");
 		};
 
-		xhttp.open("POST", "/logins", false);
+		xhttp.open("POST", "/logins");
 
 		xhttp.setRequestHeader("Content-Type", "application/json");
 

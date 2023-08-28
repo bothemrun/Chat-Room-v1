@@ -60,6 +60,16 @@
 	font-size: 32px;
 	text-align: center;
 	padding: 8px;
+	float: left;
+}
+.navbar .subtitle{
+	background-color: rgb(250, 120, 30);
+	float: left;
+	display: block;
+	font-size: 24px;
+	text-align: center;
+	padding: 8px;
+	float: left;
 }
 .navbar .logout_div {
 	background-color: rgb(250, 120, 30);
