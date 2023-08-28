@@ -1,13 +1,15 @@
+import {create_div} from "./util.js";
+
 //load the socket.io-client, which exposes an io global (and the endpoint GET /socket.io/socket.io.js), and then connect.
 //https://socket.io/get-started/chat
 //Notice that I’m not specifying any URL when I call io(), since it defaults to trying to connect to the host that serves the page.
-
 const socket = io();
 //get room_id by window URL (so must redirect to room's own URL)
 const room_id_encoded = window.location.pathname.split("/")[2];
 const room_id_decoded = decodeURIComponent(room_id_encoded);
 console.log("room_id = " + room_id_decoded);
 
+/*
 function create_div(class_, id, textContent){
 	const div = document.createElement("div");
 	if(class_ !== "") div.setAttribute("class", class_);
@@ -15,10 +17,12 @@ function create_div(class_, id, textContent){
 	if(textContent !== "") div.textContent = textContent;
 	return div;
 }
+*/
 
 function subtitle_in_navbar(subtitle){
 	const title = document.getElementById("top_navbar");
-	title.appendChild( create_div("subtitle", "", subtitle) );
+	//title.appendChild( create_div("subtitle", "", subtitle) );
+	title.appendChild( create_div("subtitle", null, subtitle) );
 }
 subtitle_in_navbar(room_id_decoded);
 
@@ -43,14 +47,17 @@ function append_new_chat_log(new_msg, timestamp_utc, username){
 
 	const chat_logs = document.getElementById("chat_logs");
 
-	const chat_post = create_div("chat_post", "", "");
+	//const chat_post = create_div("chat_post", "", "");
+	const chat_post = create_div("chat_post", null, null);
 
 	chat_post.appendChild( create_div("inline", "username", username) );
 	chat_post.appendChild( create_div("inline", "timestamp", timestamp_local) );
-	chat_post.appendChild( create_div("chat_text", "", new_msg) );
+	//chat_post.appendChild( create_div("chat_text", "", new_msg) );
+	chat_post.appendChild( create_div("chat_text", null, new_msg) );
 
 	//remove blank bar at the bottom of each chat post div.
-	const separate_div = create_div("separate_div", "", "");
+	//const separate_div = create_div("separate_div", "", "");
+	const separate_div = create_div("separate_div", null, null);
 	separate_div.appendChild( document.createElement("br") );
 	chat_post.appendChild( separate_div );
 
@@ -68,7 +75,8 @@ function append_new_chat_log(new_msg, timestamp_utc, username){
 }
 
 //when the user enters the chat room, it gets all old chat logs.
-async function enter_room_get_all_chat_logs(){
+//async function enter_room_get_all_chat_logs(){
+export async function enter_room_get_all_chat_logs(){
 	console.log("client enters the chat room and gets all old chat logs.");
 
 
@@ -116,7 +124,7 @@ async function enter_room_get_all_chat_logs(){
 	xhttp.send();
 }
 
-enter_room_get_all_chat_logs();
+//enter_room_get_all_chat_logs();
 
 
 /*form.addEventListener("submit", function(event){
@@ -133,7 +141,8 @@ enter_room_get_all_chat_logs();
 	}
 });*/
 
-function call_send_message_api(){
+//function call_send_message_api(){
+export function call_send_message_api(){
 	const input = document.getElementById("input_chat");
 	console.log("user input:" + input.value);
 
