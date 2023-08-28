@@ -25,6 +25,8 @@ app.use(express_session({
 	saveUninitialized: true
 }));
 
+//for MVC layer architecture, only controllers access models.
+const Room_Model = require("../controllers/room_controller").Room_Model;
 
 //initialize a new server instance of socket.io by the HTTP server object.
 //https://socket.io/get-started/chat
@@ -50,7 +52,7 @@ const get_express_app_instance = function(){
 
 const port = 3000
 
-get_socket_io_instance().on("connection", (socket) => {
+get_socket_io_instance().on("connection", async (socket) => {
 	console.log("socket.io server got a new \"connection\" event.");
 
 	//NOTE: client's socket instance is not server's socket.io io server/socket instances.
@@ -60,9 +62,16 @@ get_socket_io_instance().on("connection", (socket) => {
 	const sessionID = socket.request.headers.cookie.split("=")[1].split(".")[0].split("%3A")[1];
 	console.log("socket.io: parsed sessionID:" + sessionID);
 	console.log(sessionStore);
-	sessionStore.get(sessionID, function(err, session){
+	sessionStore.get(sessionID, async function(err, session){
 		console.log(`socket.io: session get from sessionStore (username=${ session.username }) :`);
 		console.log(session);
+
+		const rooms = await Room_Model.get_all_rooms_by_username(session.username);
+		console.log("socket.io: before join():" + JSON.stringify( Array.from(socket.rooms) ) );
+		for(const room of rooms){
+			await socket.join(room.room_id);
+		}
+		console.log("socket.io: after join():" + JSON.stringify( Array.from(socket.rooms) ) );
 	});
 });
 
