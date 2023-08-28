@@ -4,8 +4,9 @@
 
 const socket = io();
 //get room_id by window URL (so must redirect to room's own URL)
-const room_id = window.location.pathname.split("/")[2];
-console.log("room_id = " + room_id);
+const room_id_encoded = window.location.pathname.split("/")[2];
+const room_id_decoded = decodeURIComponent(room_id_encoded);
+console.log("room_id = " + room_id_decoded);
 
 function create_div(class_, id, textContent){
 	const div = document.createElement("div");
@@ -14,6 +15,12 @@ function create_div(class_, id, textContent){
 	if(textContent !== "") div.textContent = textContent;
 	return div;
 }
+
+function subtitle_in_navbar(subtitle){
+	const title = document.getElementById("top_navbar");
+	title.appendChild( create_div("subtitle", "", subtitle) );
+}
+subtitle_in_navbar(room_id_decoded);
 
 function append_new_chat_log(new_msg, timestamp_utc, username){
 	//time zone converted from server utc to client local.
@@ -84,16 +91,16 @@ async function enter_room_get_all_chat_logs(){
 		//https://www.digitalocean.com/community/tutorials/js-json-parse-stringify
 		for(let msg of JSON.parse( this.responseText ).data ){
 			console.log(msg);
-			console.log(msg.message);
-			console.log("timestamp utc: " + msg.timestamp_utc);
-			console.log("username: " + msg.usename);
+			//console.log(msg.message);
+			//console.log("timestamp utc: " + msg.timestamp_utc);
+			//console.log("username: " + msg.username);
 
 			append_new_chat_log(msg.message, msg.timestamp_utc, msg.username);
 		}
 	};
 
 	//HTTP GET
-	xhttp.open("GET", "/messages/" + room_id);
+	xhttp.open("GET", "/messages/" + room_id_encoded);
 
 	//specify http message body's Content-Type in header.
 	/*
@@ -150,7 +157,7 @@ function call_send_message_api(){
 		};
 
 		//HTTP POST
-		xhttp.open("POST", "/messages/" + room_id);
+		xhttp.open("POST", "/messages/" + room_id_encoded);
 
 		//specify http message body's Content-Type in header.
 		/*
@@ -183,7 +190,12 @@ socket.on("connect", () => {
 
 //when 1 of the clients send a new chat message,
 //socket.io broadcasting received from server.
-socket.on("new chat message", function(new_msg, timestamp_utc, username){
+socket.on("new chat message", function(new_msg, timestamp_utc, username, from_room_id){
+	//filter room's messages in client frontend.
+	//new messages from rooms not equal to this room_id can be used for notification.
+	console.log(`room=${ room_id_decoded } got a new chat from room=${ from_room_id }`);
+	if(from_room_id !== room_id_decoded) return;
+
 	console.log("client got a new chat: " + new_msg + ", timestamp utc:" + timestamp_utc + ", username: " + username);
 
 	append_new_chat_log(new_msg, timestamp_utc, username);

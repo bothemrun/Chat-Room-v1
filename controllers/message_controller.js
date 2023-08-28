@@ -29,8 +29,8 @@ class Message_Controller{
 		const timestamp_utc = (new Date()).toUTCString();
 
 		//socket.io emit the event to clients
-		network.get_socket_io_instance().emit("new chat message", req.body.message, timestamp_utc, req.session.username);
-		//TODO: network.get_socket_io_instance().to(room_id).emit("new chat message", req.body.message, timestamp_utc, req.session.username);
+		//network.get_socket_io_instance().emit("new chat message", req.body.message, timestamp_utc, req.session.username);
+		network.get_socket_io_instance().to(room_id).emit("new chat message", req.body.message, timestamp_utc, req.session.username, room_id);
 
 
 		//Contains key-value pairs of data submitted in the request body. By default, it is undefined, and is populated when you use body-parsing middleware such as express.json()

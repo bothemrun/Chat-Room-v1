@@ -10,8 +10,6 @@ function create_div(class_, id_, textContent_){
 }
 
 function append_room(room_id){
-	const all_chat_rooms_by_username = document.getElementById("all_chat_rooms_by_username");
-
 	const room_post = create_div("room_post", null, null);
 
 	room_post.appendChild( create_div("room_text", null, room_id) );
@@ -20,7 +18,7 @@ function append_room(room_id){
 	separate_div.appendChild( document.createElement("br") );
 	room_post.appendChild( separate_div );
 
-	all_chat_rooms_by_username.appendChild( room_post );
+	document.getElementById("all_rooms_by_username").appendChild( room_post );
 
 	window.scrollTo(0, document.body.scrollHeight);
 }
@@ -50,7 +48,7 @@ get_all_rooms_by_username();
 
 
 async function uri_exist(uri){
-	const xhttp = XMLHttpRequest();
+	const xhttp = new XMLHttpRequest();
 	xhttp.onload = function(){
 		//200 or 201
 		if(this.status/100 !== 2) return false;

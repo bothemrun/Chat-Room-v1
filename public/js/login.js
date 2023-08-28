@@ -82,7 +82,7 @@ function login(){
 			}else redirect_home("/room_selection.html");
 		};
 
-		xhttp.open("POST", "/logins", false);
+		xhttp.open("POST", "/logins");
 
 		xhttp.setRequestHeader("Content-Type", "application/json");
 
